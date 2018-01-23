@@ -85,9 +85,9 @@ public class StoreFragment extends Fragment {
                 listViewStore.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Toast.makeText(getContext(),"check = "+i,Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(),"check = "+storeLists.get(i).getStoreID(),Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(getActivity(), TheStoreActivity.class);
-                        intent.putExtra("storePosition",i);
+                        intent.putExtra("storeID",storeLists.get(i).getStoreID());
                         startActivity(intent);
                     }
                 });
