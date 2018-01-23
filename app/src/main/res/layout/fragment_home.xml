@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.HomeFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ss.com.bannerslider.views.BannerSlider
+                android:id="@+id/banner_slider_home"
+                android:layout_width="match_parent"
+                android:layout_height="262dp"
+                android:scaleType="fitCenter"
+                app:defaultIndicators="circle"
+                app:interval="5000"
+                app:loopSlides="true"></ss.com.bannerslider.views.BannerSlider>
+        </android.support.constraint.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ss.com.bannerslider.views.BannerSlider
+                android:id="@+id/banner_slider_home1"
+                android:layout_width="194dp"
+                android:layout_height="212dp"
+                android:scaleType="fitCenter"
+                app:defaultBanner="4"
+                app:defaultIndicators="circle"
+                app:interval="4000"
+                app:loopSlides="true"></ss.com.bannerslider.views.BannerSlider>
+
+            <ss.com.bannerslider.views.BannerSlider
+                android:id="@+id/banner_slider_home2"
+                android:layout_width="match_parent"
+                android:layout_height="212dp"
+                android:scaleType="fitCenter"
+                app:defaultIndicators="circle"
+                app:interval="6000"
+                app:loopSlides="true"></ss.com.bannerslider.views.BannerSlider>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "820347295755",
+    "firebase_url": "https://demonfc-7d842.firebaseio.com",
+    "project_id": "demonfc-7d842",
+    "storage_bucket": "demonfc-7d842.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:820347295755:android:2c77634d6b994ff2",
+        "android_client_info": {
+          "package_name": "com.karnjang.firebasedemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "820347295755-njtja62ha4uafs088ss32el3de5bmdpj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLWMNnXEUhoj0KDvb4Xd1GLTl0uXfUzaI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
