@@ -60,6 +60,7 @@ public class UserInfoActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         User user = dataSnapshot.getValue(User.class);
+                        Log.i("UserInfoAct INFO","Check USER json "+dataSnapshot.getValue());
                         Toast.makeText(getApplicationContext(), "Setting XP", Toast.LENGTH_SHORT).show();
                         TextView userText = (TextView) findViewById(R.id.textUsername);
                         int userLevel = user.getTotalXp() / 100;

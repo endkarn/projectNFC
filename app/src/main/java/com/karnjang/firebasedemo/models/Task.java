@@ -5,31 +5,40 @@ package com.karnjang.firebasedemo.models;
  */
 
 public class Task {
-    private int taskType;
-    private String taskName;
+    private int taskConditionForCompleteTask;
     private String taskDetail;
-    private int taskCurrentProgress;
-    private int taskCompletedProgress;
-    private int taskXpReward;
-    private int taskPtReward;
+    private int taskExpReward;
+    private String taskName;
+    private int taskPointReward;
 
 
-    public Task(int taskType, String taskName, String taskDetail, int taskCurrentProgress, int taskCompletedProgress, int taskXpReward, int taskPtReward) {
-        this.taskType = taskType;
-        this.taskName = taskName;
+    public Task() {
+
+    }
+
+
+    public int getTaskConditionForCompleteTask() {
+        return taskConditionForCompleteTask;
+    }
+
+    public void setTaskConditionForCompleteTask(int taskConditionForCompleteTask) {
+        this.taskConditionForCompleteTask = taskConditionForCompleteTask;
+    }
+
+    public String getTaskDetail() {
+        return taskDetail;
+    }
+
+    public void setTaskDetail(String taskDetail) {
         this.taskDetail = taskDetail;
-        this.taskCurrentProgress = taskCurrentProgress;
-        this.taskCompletedProgress = taskCompletedProgress;
-        this.taskXpReward = taskXpReward;
-        this.taskPtReward = taskPtReward;
     }
 
-    public int getTaskType() {
-        return taskType;
+    public int getTaskExpReward() {
+        return taskExpReward;
     }
 
-    public void setTaskType(int taskType) {
-        this.taskType = taskType;
+    public void setTaskExpReward(int taskExpReward) {
+        this.taskExpReward = taskExpReward;
     }
 
     public String getTaskName() {
@@ -40,45 +49,12 @@ public class Task {
         this.taskName = taskName;
     }
 
-
-
-    public int getTaskCurrentProgress() {
-        return taskCurrentProgress;
+    public int getTaskPointReward() {
+        return taskPointReward;
     }
 
-    public void setTaskCurrentProgress(int taskCurrentProgress) {
-        this.taskCurrentProgress = taskCurrentProgress;
+    public void setTaskPointReward(int taskPointReward) {
+        this.taskPointReward = taskPointReward;
     }
 
-    public int getTaskCompletedProgress() {
-        return taskCompletedProgress;
-    }
-
-    public void setTaskCompletedProgress(int taskCompletedProgress) {
-        this.taskCompletedProgress = taskCompletedProgress;
-    }
-
-    public int getTaskXpReward() {
-        return taskXpReward;
-    }
-
-    public void setTaskXpReward(int taskXpReward) {
-        this.taskXpReward = taskXpReward;
-    }
-
-    public int getTaskPtReward() {
-        return taskPtReward;
-    }
-
-    public void setTaskPtReward(int taskPtReward) {
-        this.taskPtReward = taskPtReward;
-    }
-
-    public String getTaskDetail() {
-        return taskDetail;
-    }
-
-    public void setTaskDetail(String taskDetail) {
-        this.taskDetail = taskDetail;
-    }
 }

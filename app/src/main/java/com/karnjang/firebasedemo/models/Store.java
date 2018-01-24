@@ -12,37 +12,37 @@ public class Store {
     private Task TASK;
     private List<Item> ITEMS;
 
-    public Store() {
+
+    public Store( ) {
 
     }
-
 
     public String getStoreID() {
         return storeID;
-    }
-
-    public void setStoreID(String storeID) {
-        this.storeID = storeID;
     }
 
     public String getStoreName() {
         return storeName;
     }
 
-    public void setStoreName(String storeName) {
-        this.storeName = storeName;
-    }
-
     public Task getTASK() {
         return TASK;
     }
 
-    public void setTASK(Task TASK) {
-        this.TASK = TASK;
-    }
-
     public List<Item> getITEMS() {
         return ITEMS;
+    }
+
+    public void setStoreID(String storeID) {
+        this.storeID = storeID;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
+    public void setTASK(Task TASK) {
+        this.TASK = TASK;
     }
 
     public void setITEMS(List<Item> ITEMS) {

@@ -9,14 +9,10 @@ public class Item {
     private String itemId;
     private String itemName;
     private int itemPrice;
-    private int itemPicture;
+    private int itemType;
 
-    public Item (String itemId, String itemName, int itemPrice, int itemPicture){
+    public Item (){
 
-        this.itemId = itemId;
-        this.itemName = itemName;
-        this.itemPrice = itemPrice;
-        this.itemPicture = itemPicture;
 
 
     }
@@ -46,11 +42,11 @@ public class Item {
         this.itemPrice = itemPrice;
     }
 
-    public int getItemPicture() {
-        return itemPicture;
+    public int getItemType() {
+        return itemType;
     }
 
-    public void setItemPicture(int itemPicture) {
-        this.itemPicture = itemPicture;
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
     }
 }

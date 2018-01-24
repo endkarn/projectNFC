@@ -28,6 +28,7 @@ public class TheStoreDetailFragment extends Fragment {
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
     DatabaseReference dbStoreRef = dbref.child("STORE");
 
+
     public TheStoreDetailFragment() {
         // Required empty public constructor
     }
@@ -37,45 +38,45 @@ public class TheStoreDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View thestoreview = inflater.inflate(R.layout.fragment_the_store_detail,container,false);
-        final TextView textTheStoreId = (TextView) thestoreview.findViewById(R.id.textTheStoreId);
-        final TextView textTheStoreName = (TextView) thestoreview.findViewById(R.id.textTheStoreName);
+        View theStoreDetailView = inflater.inflate(R.layout.fragment_the_store_detail,container,false);
+        final TextView textTheStoreId = (TextView) theStoreDetailView.findViewById(R.id.textTheStoreId);
+        final TextView textTheStoreName = (TextView) theStoreDetailView.findViewById(R.id.textTheStoreName);
 
         Log.i("TheStoreDetail INFO","Start Getting Data From The Store From Firebase" +dbStoreRef);
 
        String storeId = getActivity().getIntent().getExtras().getString("storeID");
 
         Log.i("TheStoreDetail INFO","Check StoreID From Activity "+storeId);
-//        dbStoreRef.child(storeId).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.exists()){
-//                    Store oneStore = new Store();
-//                    String storeId = (String) dataSnapshot.child("storeID").getValue();
-//                    String storeName = (String) dataSnapshot.child("storeName").getValue();
-//                    oneStore.setStoreID(storeId);
-//                    oneStore.setStoreName(storeName);
-//                    Log.i("TheStoreDetail INFO","Check DATA StoreID"+storeId);
-//                    Log.i("TheStoreDetail INFO","Check DATA StoreName"+storeName);
-//
-//                    textTheStoreId.setText("STORE_ID__"+storeId);
-//                    textTheStoreName.setText("STORE_NAME__"+storeName);
-//                }else {
-//                    Log.i("TheStoreDetail INFO","No Data From Firebase");
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
+        dbStoreRef.child(storeId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    Store oneStore = new Store();
+                    String storeId = (String) dataSnapshot.child("storeID").getValue();
+                    String storeName = (String) dataSnapshot.child("storeName").getValue();
+                    oneStore.setStoreID(storeId);
+                    oneStore.setStoreName(storeName);
+                    Log.i("TheStoreDetail INFO","Check DATA StoreID"+storeId);
+                    Log.i("TheStoreDetail INFO","Check DATA StoreName"+storeName);
+
+                    textTheStoreId.setText("STORE_ID__"+storeId);
+                    textTheStoreName.setText("STORE_NAME__"+storeName);
+                }else {
+                    Log.i("TheStoreDetail INFO","No Data From Firebase");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
         Log.i("StoreDetail INFO","position"+storeId);
 
 
-        return thestoreview;
+        return theStoreDetailView;
     }
 
 }
