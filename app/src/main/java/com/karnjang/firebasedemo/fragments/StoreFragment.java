@@ -34,8 +34,8 @@ public class StoreFragment extends Fragment {
     DatabaseReference dbStoreRef = dbref.child("STORE");
 
     int[] IMAGES = {R.drawable.store_image1, R.drawable.store_image2, R.drawable.store_image1, R.drawable.store_image2, R.drawable.store_image1, R.drawable.store_image2};
-    String[] NAMES = {"STORE00", "STORE01", "STORE02", "STORE03", "STORE04", "STORE05", "STORE06"};
-    String[] DESCS = {"DESC00", "DESC01", "DESC02", "DESC03", "DESC04", "DESC05", "DESC06"};
+//    String[] NAMES = {"STORE00", "STORE01", "STORE02", "STORE03", "STORE04", "STORE05", "STORE06"};
+//    String[] DESCS = {"DESC00", "DESC01", "DESC02", "DESC03", "DESC04", "DESC05", "DESC06"};
     ArrayList<Store> storeLists = new ArrayList<>();
 
 
@@ -88,6 +88,7 @@ public class StoreFragment extends Fragment {
                         Toast.makeText(getContext(),"check = "+storeLists.get(i).getStoreID(),Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(getActivity(), TheStoreActivity.class);
                         intent.putExtra("storeID",storeLists.get(i).getStoreID());
+                        intent.putExtra("storeName",storeLists.get(i).getStoreName());
                         startActivity(intent);
                     }
                 });

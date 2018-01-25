@@ -12,6 +12,7 @@ public class Task {
     private int taskPointReward;
 
 
+
     public Task() {
 
     }
