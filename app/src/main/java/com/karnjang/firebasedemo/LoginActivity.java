@@ -81,11 +81,11 @@ public class LoginActivity extends AppCompatActivity {
         });
         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
         intent.putExtra("username",yourName);
+
          SharedPreferences userPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
          SharedPreferences.Editor userEditor = userPref.edit();
-        userEditor.putString("SH_USERNAME",yourName);
-
-        userEditor.apply();
+         userEditor.putString("SH_USERNAME",yourName);
+         userEditor.apply();
 
         Log.i("info", "put extra done");
 

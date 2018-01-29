@@ -51,7 +51,9 @@ public class UserInfoFragment extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
+                        Log.i("dataUserInfo","dataUserInfo+++"+dataSnapshot);
                         User user = dataSnapshot.getValue(User.class);
+                        Log.i("dataUserInfo","dataUserInfo userClass+++"+user);
                         int yourUserPoint = user.getTotalPoints();
                         int yourUserExp = user.getTotalXp();
                         String yourUserName = user.getUsername();

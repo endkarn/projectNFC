@@ -1,14 +1,16 @@
 package com.karnjang.firebasedemo.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -18,10 +20,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.karnjang.firebasedemo.ExchangeItemActivity;
 import com.karnjang.firebasedemo.R;
 import com.karnjang.firebasedemo.models.Item;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -44,7 +45,7 @@ public class TheStoreItemListFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View theitemlistview = inflater.inflate(R.layout.fragment_the_store_item_list, container, false);
@@ -52,10 +53,6 @@ public class TheStoreItemListFragment extends Fragment {
 
         String storeId = getActivity().getIntent().getExtras().getString("storeID");
         Log.i("######StoreListItem","get store id"+storeId);
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-////                getContext(),
-////                android.R.layout.simple_list_item_1,
-////                NAMES);
         dbStoreRef.child(storeId).child("ITEMS").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -68,6 +65,12 @@ public class TheStoreItemListFragment extends Fragment {
 
                 CustomItemListAdapter customItemListStore = new CustomItemListAdapter();
                 listViewTheStoreItemList.setAdapter(customItemListStore);
+                listViewTheStoreItemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                    }
+                });
 
             }
 
@@ -101,13 +104,22 @@ public class TheStoreItemListFragment extends Fragment {
             ImageView imageItemView = (ImageView) theitemlistview.findViewById(R.id.imageItemView);
             TextView textItemName = (TextView) theitemlistview.findViewById(R.id.textItemName);
             TextView textItemPrice = (TextView) theitemlistview.findViewById(R.id.textItemPrice);
+            Button button = (Button) theitemlistview.findViewById(R.id.buttonItem) ;
+
             Item item = itemArrayList.get(i);
             Log.i("#StoreListItem GetView","name "+item.getItemName()+" price "+item.getItemPrice());
             imageItemView.setImageResource(IMAGES[item.getItemType()]);
             textItemName.setText(item.getItemName());
             textItemPrice.setText(""+item.getItemPrice());
+            button.setText("USE"+item.getItemPrice());
 
-
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent itemIntent = new Intent(getActivity(), ExchangeItemActivity.class);
+                    startActivity(itemIntent);
+                }
+            });
             return theitemlistview;
         }
     }

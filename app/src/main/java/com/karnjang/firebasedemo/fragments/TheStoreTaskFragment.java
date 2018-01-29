@@ -1,8 +1,11 @@
 package com.karnjang.firebasedemo.fragments;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.karnjang.firebasedemo.R;
+import com.karnjang.firebasedemo.models.ActiveTask;
 import com.karnjang.firebasedemo.models.Store;
 import com.karnjang.firebasedemo.models.Task;
 import com.karnjang.firebasedemo.models.User;
@@ -26,6 +30,8 @@ import org.w3c.dom.Text;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +40,9 @@ public class TheStoreTaskFragment extends Fragment {
 
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
     DatabaseReference dbStoreRef = dbref.child("STORE");
+    DatabaseReference dbUserRef = dbref.child("users");
+
+
     SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 
     public TheStoreTaskFragment() {
@@ -51,23 +60,74 @@ public class TheStoreTaskFragment extends Fragment {
         final TextView textProgressBar = (TextView) thestoretaskview.findViewById(R.id.textTaskProgressBar);
         final TextView textTaskTimeLeft = (TextView) thestoretaskview.findViewById(R.id.textTaskTimeLeft);
         final TextView textTaskRewards = (TextView) thestoretaskview.findViewById(R.id.textTaskRewards);
+        SharedPreferences userPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
 
-        String storeId = getActivity().getIntent().getExtras().getString("storeID");
+        final String userName = userPref.getString("SH_USERNAME",null);
+        Log.i("STORE TASK####","username from sh"+userName);
+        final String storeId = getActivity().getIntent().getExtras().getString("storeID");
        // String storeName = getActivity().getIntent().getExtras().getString("storeName");
 
         Log.i("TheStoreTask INFO","Check StoreID From Activity "+storeId);
         dbStoreRef.child(storeId).child("TASK").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot taskSnapshot) {
+            public void onDataChange(final DataSnapshot taskSnapshot) {
                 if (taskSnapshot.exists()) {
                     Log.i("TheStoreTask INFO","Check DATA taskSnapshot "+taskSnapshot.getValue());
 
                     Task oneStoreTask = taskSnapshot.getValue(Task.class);
                     textTaskName.setText(oneStoreTask.getTaskName());
                     textTaskRewards.setText("Rewards XP+" + oneStoreTask.getTaskExpReward() + "/ Point+" + oneStoreTask.getTaskPointReward());
-                    progressTaskBar.setMax(oneStoreTask.getTaskConditionForCompleteTask());
-                    progressTaskBar.setProgress(2);
-                    textProgressBar.setText("Take task complete 2/" + oneStoreTask.getTaskConditionForCompleteTask());
+                    final Integer taskProgress = oneStoreTask.getTaskConditionForCompleteTask();
+
+                    progressTaskBar.setMax(taskProgress);
+
+                    dbUserRef.child(userName).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot userSnapshot) {
+
+                            Long longUserProgress = (Long) userSnapshot.child("ACTIVETASK").child(storeId).child("currentCondition").getValue();
+                            Long longTaskStatus = (Long) userSnapshot.child("ACTIVETASK").child(storeId).child("taskStatus").getValue();
+                            int userProgress = longUserProgress.intValue();
+                            int intTaskStatus = longTaskStatus.intValue();
+
+
+                            if (userProgress == taskProgress && intTaskStatus == 0){
+                                User user = userSnapshot.getValue(User.class);
+                                Task task = taskSnapshot.getValue(Task.class);
+                                ActiveTask userTask = userSnapshot.child("ACTIVETASK").child(storeId).getValue(ActiveTask.class);
+                                user.setTotalPoints(user.getTotalPoints()+task.getTaskPointReward());
+                                user.setTotalXp(user.getTotalXp()+task.getTaskExpReward());
+
+                                userTask.setTaskStatus(1);
+                                userTask.setStoreId(storeId);
+                                dbUserRef.child(userName).setValue(user);
+                                dbUserRef.child(userName).child("ACTIVETASK").child(storeId).setValue(userTask);
+
+//                                Map<String,Object> taskMap = new HashMap<String,Object>();
+//                                taskMap.put("currentCondition",0);
+//                                dbUserRef.child(userName).child("ACTIVETASK").child(storeId).child("currentCondition").updateChildren(taskMap);
+
+                                Log.i("StoreTask","Task is DONE and get Rewards");
+//                                SystemClock.sleep(5000);
+//                                getActivity().finish();
+                            }
+
+
+                            textProgressBar.setText("Take task complete "+ userProgress + "/" + taskProgress);
+                            progressTaskBar.setProgress(userProgress);
+
+//                            completeTask() Function below
+
+
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            //do nothing
+                        }
+                    });
+
 
 
 
@@ -127,6 +187,11 @@ public class TheStoreTaskFragment extends Fragment {
 
         Log.i("TheStoreTask INFO","position " +storeId);
         return thestoretaskview;
+    }
+
+    public void completeTask(User user,Task task){
+
+
     }
 
 }

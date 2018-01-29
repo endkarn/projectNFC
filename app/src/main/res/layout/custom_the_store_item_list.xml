@@ -36,17 +36,18 @@
                     android:id="@+id/textItemPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:text="TextView"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/buttonItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="EXCHANGE"
-                android:textSize="8sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
     </FrameLayout>
