@@ -3,6 +3,8 @@ package com.karnjang.firebasedemo.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +12,31 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.karnjang.firebasedemo.R;
+import com.karnjang.firebasedemo.TheStoreActivity;
+import com.karnjang.firebasedemo.models.User;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class RankingFragment extends Fragment {
 
+    DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference dbUserRef = dbref.child("users");
+
     String[] RANKNAME = {"USERNAME01", "USERNAME02", "USERNAME03", "USERNAME04", "USERNAME05", "USERNAME06"};
     String[] RANKLEVEL = {"99", "92", "85", "75", "62", "30"};
+
+    ArrayList<User> userArrayList = new ArrayList<>();
 
     public RankingFragment() {
         // Required empty public constructor
@@ -30,9 +48,30 @@ public class RankingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rankview = inflater.inflate(R.layout.fragment_ranking, container, false);
-        ListView listViewRank = (ListView) rankview.findViewById(R.id.listViewRank);
-        CustomRankAdapter customRankAdapter = new CustomRankAdapter();
-        listViewRank.setAdapter(customRankAdapter);
+        final ListView listViewRank = (ListView) rankview.findViewById(R.id.listViewRank);
+
+        dbUserRef.orderByChild("totalXp").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()){
+                    User oneUser = userSnapshot.getValue(User.class);
+                    Log.i("USER info","data " +oneUser.getUsername() + " " +oneUser.getTotalXp());
+                    userArrayList.add(oneUser);
+                }
+
+                CustomRankAdapter customRankAdapter = new CustomRankAdapter();
+                listViewRank.setAdapter(customRankAdapter);
+
+                //Collections.reverse((List<?>) listViewRank);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
 
         return rankview;
     }
@@ -42,7 +81,7 @@ public class RankingFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return RANKNAME.length;
+            return userArrayList.size();
         }
 
         @Override
@@ -60,9 +99,10 @@ public class RankingFragment extends Fragment {
             ranklistview = getLayoutInflater().inflate(R.layout.custom_rank_listview, null);
             TextView textRankName = (TextView) ranklistview.findViewById(R.id.rankTextName);
             TextView textRankLevel = (TextView) ranklistview.findViewById(R.id.rankTextLevel);
-
-            textRankName.setText(RANKNAME[i]);
-            textRankLevel.setText(RANKLEVEL[i]);
+            //Sorting by DESC
+            User theUser = userArrayList.get(getCount() - 1 - i);
+            textRankName.setText(theUser.getUsername());
+            textRankLevel.setText(theUser.getUserLevel());
             return ranklistview;
         }
     }

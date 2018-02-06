@@ -50,4 +50,9 @@ public class User {
     public void setTotalPoints(int totalPoints) {
         this.totalPoints = totalPoints;
     }
+
+    public String getUserLevel(){
+        String userLevel = Integer.toString(totalXp/100);
+        return userLevel;
+    }
 }
