@@ -37,9 +37,12 @@
             tools:layout_editor_absoluteX="56dp"
             tools:layout_editor_absoluteY="113dp" />
 
-        <Space
+        <ImageView
+            android:id="@+id/imageView4"
             android:layout_width="match_parent"
-            android:layout_height="158dp" />
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/coolpong_box" />
 
         <EditText
             android:id="@+id/userName"

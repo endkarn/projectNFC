@@ -12,6 +12,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="180dp" />
+
         <TextView
             android:id="@+id/textView3"
             android:layout_width="match_parent"
@@ -39,7 +43,7 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="192dp" />
+            android:layout_height="20dp" />
 
         <ProgressBar
             android:id="@+id/progressBar3"

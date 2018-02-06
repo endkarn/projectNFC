@@ -1,160 +1,224 @@
 package com.karnjang.firebasedemo;
 
+import android.app.Dialog;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
+import android.nfc.tech.NfcF;
+import android.os.CountDownTimer;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.karnjang.firebasedemo.models.Item;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Locale;
 
 public class ExchangeItemActivity extends AppCompatActivity {
 
     NfcAdapter nfcAdapter;
-    Intent initent = getIntent();
+    DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference dbStoreRef = dbref.child("STORE");
+
+    private TextView textNfc;
+
+    private PendingIntent nfcPendingIntent;
+    private IntentFilter[] nfcIntentFilters;
+    private String[][] nfcTechLists;
+    String textString = "";
+    String waitingTag = "";
+    Item itemEx;
+    String storeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exchange_item);
 
+        Intent iIntent = getIntent();
+        storeId = iIntent.getExtras().getString("StoreID");
+        String ItemId = iIntent.getExtras().getString("ItemID");
+        SharedPreferences userPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        String userName = userPref.getString("SH_USERNAME","");
+
+        ImageView imageItem = findViewById(R.id.imageItem);
+        textNfc = findViewById(R.id.textNfc);
+        waitingTag = "KOOLPONG_FROMSTORE_"+storeId;
+        Log.i("Ex Info","Wait Tag"+waitingTag);
+
+        final TextView textItemName = findViewById(R.id.textItemName);
+        final TextView textItemPrice = findViewById(R.id.textItemPrice);
+        final TextView textItemStore = findViewById(R.id.textItemStore);
+        final ToggleButton buttonTimeOut = findViewById(R.id.buttonTimeOut);
+
+        dbStoreRef.child(storeId).child("ITEMS").child(ItemId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                itemEx = dataSnapshot.getValue(Item.class);
+
+                Log.i("Ex Info", String.valueOf(dataSnapshot));
+
+                textItemName.setText("Item : "+itemEx.getItemName());
+                textItemPrice.setText("Price : "+itemEx.getItemPrice());
+                textItemStore.setText("Ref Store : "+storeId);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-    }
+        if(nfcAdapter != null){
 
+        }else {
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        enableForegroundDispatchSystem();
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        disableForegroundDispatchSystem();
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        if(intent.hasExtra(NfcAdapter.EXTRA_TAG)) {
-            Toast.makeText(ExchangeItemActivity.this, "NFC has Intent!", Toast.LENGTH_SHORT).show();
-
-            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            NdefMessage ndefMessage = createNdefMessage("NFC is da bes y'all");
-
-            writeNdefMessage(tag, ndefMessage);
         }
-    }
 
-    private void enableForegroundDispatchSystem() {
-        Intent intent = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
+        // create an intent with tage data
+        nfcPendingIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
-        PendingIntent pendingIntent =  PendingIntent.getActivity(this, 0, intent, 0);
-
-        IntentFilter[] intentFilters = new IntentFilter[] {};
-
-        nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilters, null);
-    }
-
-    private void disableForegroundDispatchSystem() {
-        nfcAdapter.disableForegroundDispatch(this);
-    }
-
-    private void formatTag(Tag tag, NdefMessage ndefMessage) {
-        try{
-            NdefFormatable ndefFormatable = NdefFormatable.get(tag);
-
-            if(ndefFormatable == null) {
-                Toast.makeText(this, "Tag is not NdefFormatable!!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            ndefFormatable.connect();
-            ndefFormatable.format(ndefMessage);
-            ndefFormatable.close();
-
-            Toast.makeText(this, "Tag Written!! :) ", Toast.LENGTH_SHORT).show();
-
-        } catch (Exception e) {
-            Log.e("formatTag", e.getMessage());
-        }
-    }
-
-    private void writeNdefMessage(Tag tag, NdefMessage ndefMessage) {
+        // create intent filter for MIME data
+        IntentFilter ndefIntent = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
         try {
+            ndefIntent.addDataType("*/*");
+            nfcIntentFilters = new IntentFilter[] { ndefIntent };
+        } catch (Exception e) {
+            Log.e("TagDispatch", e.toString());
+        }
 
-            if(tag == null) {
-                Toast.makeText(this, "Tag object cannot be null", Toast.LENGTH_SHORT).show();
-                return;
+        nfcTechLists = new String[][] { new String[] { NfcF.class.getName() } };
+
+
+
+
+        new CountDownTimer(60000,1000) {
+
+            public void onTick(long millisUntilFinished) {
+                buttonTimeOut.setText(Long.toString(millisUntilFinished/1000));
             }
 
-            Ndef ndef = Ndef.get(tag);
+            public void onFinish() {
+                buttonTimeOut.setText("Time Out!");
+
+            }
+        }.start();
 
 
-            if(ndef == null) {
-                //format tag with ndef format and writes message
-                formatTag(tag,ndefMessage);
-            } else {
-                ndef.connect();
 
-                if(!ndef.isWritable()) {
-                    Toast.makeText(this, "Tag is not writable! ", Toast.LENGTH_SHORT).show();
-                    ndef.close();
-                    return;
+
+
+
+
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        String action = intent.getAction();
+        // get the data from the tage
+        Tag nfc_tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+        // string that hold val of tag data
+        String s = action + "\n\n" + nfc_tag.toString();
+
+        // create the parceable object to parse through all nfc data, but only get the text
+        Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+        // parse the data
+        if (data != null) {
+            try {
+                for (int i = 0; i < data.length; i++) {
+                    NdefRecord [] nfc_records = ((NdefMessage)data[i]).getRecords();
+                    for (int j = 0; j < nfc_records.length; j++) {
+                        if (nfc_records[j].getTnf() == NdefRecord.TNF_WELL_KNOWN &&
+                                Arrays.equals(nfc_records[j].getType(), NdefRecord.RTD_TEXT)) {
+                            byte[] nfc_payload = nfc_records[j].getPayload();
+                            String textEncoding = ((nfc_payload[0] & 0200) == 0) ? "UTF-8" : "UTF-16";
+                            int langCodeLen = nfc_payload[0] & 0077;
+                            // concat data to end of string
+                            s += ("\n\nNdefMessage[" + i + "], NdefRecord[" + j + "]:\n\"" +
+                                    new String(nfc_payload, langCodeLen + 1, nfc_payload.length - langCodeLen - 1,
+                                            textEncoding) + "\"");
+                            textString = new String(nfc_payload, langCodeLen + 1, nfc_payload.length - langCodeLen - 1,
+                                    textEncoding);
+                        }
+                    }
                 }
-
-                ndef.writeNdefMessage(ndefMessage);
-                ndef.close();
-
-                Toast.makeText(this, "Tag Written!! :) ", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Log.e("TagDispatch", e.toString());
             }
+        }
+        // set the textview to the NFC text data
+//        textNfc.setText(s);
+        textNfc.setText(textString);
 
-        } catch (Exception e) {
-            Log.e("writeNdefMessage", e.getMessage());
+        if(waitingTag.equals(textString)){
+            final Dialog dialog = new Dialog(ExchangeItemActivity.this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.custom_dialog_exchangeitem);
+            dialog.setCancelable(true);
+
+            Button buttonDiCom = dialog.findViewById(R.id.buttonDialog);
+            buttonDiCom.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Toast.makeText(getApplicationContext()
+                            , "Close dialog", Toast.LENGTH_SHORT);
+                    dialog.cancel();
+                }
+            });
+
+            TextView textDiItemName = (TextView)dialog.findViewById(R.id.textDiItemName);
+            TextView textDiItemStore = (TextView)dialog.findViewById(R.id.textDiItemStore);
+
+            textDiItemName.setText(itemEx.getItemName());
+            textDiItemStore.setText(storeId);
+
+            dialog.show();
+        }else{
+
         }
     }
 
-    private NdefRecord createTextRecord(String content) {
-        try {
-            byte[] language;
-            language = Locale.getDefault().getLanguage().getBytes("UTF-8");
+    @Override
+    public void onResume() {
+        super.onResume();
 
-            final byte[] text = content.getBytes("UTF-8");
-            final int languageSize = language.length;
-            final int textLength = text.length;
-            final ByteArrayOutputStream payload = new ByteArrayOutputStream(1 + languageSize + textLength);
-
-            payload.write((byte) (languageSize & 0x1F));
-            payload.write(language, 0, languageSize);
-            payload.write(text, 0, textLength);
-
-            return new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, new byte[0], payload.toByteArray());
-
-        } catch (UnsupportedEncodingException e) {
-            Log.e("createTextRecord", e.getMessage());
-        }
-        return null;
+        if (nfcAdapter != null)
+            nfcAdapter.enableForegroundDispatch(this, nfcPendingIntent, nfcIntentFilters, nfcTechLists);
     }
 
-    private NdefMessage createNdefMessage(String content) {
+    @Override
+    public void onPause() {
+        super.onPause();
 
-        NdefRecord ndefRecord = createTextRecord(content);
-
-        NdefMessage ndefMessage = new NdefMessage(new NdefRecord[]{ndefRecord});
-
-        return ndefMessage;
+        if (nfcAdapter != null)
+            nfcAdapter.disableForegroundDispatch(this);
     }
+
+
+
 }
