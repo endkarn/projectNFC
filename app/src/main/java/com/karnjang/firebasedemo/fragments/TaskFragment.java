@@ -1,7 +1,10 @@
 package com.karnjang.firebasedemo.fragments;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -23,8 +26,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.karnjang.firebasedemo.R;
 import com.karnjang.firebasedemo.TheStoreActivity;
+import com.karnjang.firebasedemo.models.ActiveTask;
 import com.karnjang.firebasedemo.models.Store;
 import com.karnjang.firebasedemo.models.Task;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,12 +43,15 @@ public class TaskFragment extends Fragment {
 
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
     DatabaseReference dbStoreRef = dbref.child("STORE");
+    DatabaseReference dbUserRef = dbref.child("users");
     public long remainTime;
+    String userName;
 
 
     String[] TASKNAME = {"TASK00", "TASK01", "TASK02", "TASK03", "TASK04", "TASK05", "TASK06"};
     String[] TASKDESC = {"DESC00", "DESC01", "DESC02", "DESC03", "DESC04", "DESC05", "DESC06"};
     ArrayList<Store> storeLists = new ArrayList<>();
+    ArrayList<ActiveTask> activeTaskLists = new ArrayList<>();
 
     public TaskFragment() {
         // Required empty public constructor
@@ -54,9 +63,10 @@ public class TaskFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View taskview = inflater.inflate(R.layout.fragment_task, container, false);
         // Inflate the layout for this fragment
-
         final ListView listViewTask = (ListView) taskview.findViewById(R.id.listViewTask);
 
+        SharedPreferences userPref = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        userName = userPref.getString("SH_USERNAME","");
         Calendar targetTime = Calendar.getInstance();
         targetTime.set(Calendar.HOUR_OF_DAY, 23);
         targetTime.set(Calendar.MINUTE, 59);
@@ -97,7 +107,20 @@ public class TaskFragment extends Fragment {
 
                 }
 
-                Log.i("info StoreFragment", "Adding Store Done");
+                dbUserRef.child(userName).child("ACTIVETASK").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataTaskSnapshot) {
+                        for(DataSnapshot activeTaskSnapshot : dataTaskSnapshot.getChildren()){
+                            ActiveTask activeTask = new ActiveTask();
+                            activeTaskLists.add(activeTask);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
 
                 CustomTaskAdapter customTaskAdapter = new CustomTaskAdapter();
@@ -148,13 +171,42 @@ public class TaskFragment extends Fragment {
         public View getView(int i, View tasklistview, ViewGroup viewGroup) {
             tasklistview = getLayoutInflater().inflate(R.layout.custom_task_listview, null);
             Store theStore = storeLists.get(i);
-            TextView textTaskName = (TextView) tasklistview.findViewById(R.id.taskTextName);
-            TextView textTaskDesc = (TextView) tasklistview.findViewById(R.id.taskTextDesc);
-            final TextView textTaskCountDown = (TextView) tasklistview.findViewById(R.id.taskTextCountDown);
-            ProgressBar progressTaskBar = (ProgressBar) tasklistview.findViewById(R.id.progressTaskBar);
+            ActiveTask theActiveTask = activeTaskLists.get(i);
 
-            textTaskName.setText(theStore.getStoreName()+"_"+theStore.getTASK().getTaskName());
+            TextView textStoreInfo = tasklistview.findViewById(R.id.textStoreInfo);
+            TextView textTaskName = tasklistview.findViewById(R.id.textTaskName);
+            TextView textTaskDesc = tasklistview.findViewById(R.id.textTaskDesc);
+            final TextView textTaskTimeLeft = tasklistview.findViewById(R.id.textTaskTimeLeft);
+            ProgressBar progressTaskBar = tasklistview.findViewById(R.id.progressTaskBar);
+            TextView textTaskReward = tasklistview.findViewById(R.id.textTaskReward);
+            TextView textTaskStatus = tasklistview.findViewById(R.id.textTaskStatus);
+
+            textStoreInfo.setText(theStore.getStoreID()+"_"+theStore.getStoreName());
+            textTaskName.setText(theStore.getTASK().getTaskName());
             textTaskDesc.setText(theStore.getTASK().getTaskDetail());
+            textTaskReward.setText("+"+theStore.getTASK().getTaskExpReward()+"XP  / +"+theStore.getTASK().getTaskPointReward()+"PT");
+            progressTaskBar.setMax(theStore.getTASK().getTaskConditionForCompleteTask());
+            progressTaskBar.setProgress(theActiveTask.currentCondition);
+
+            if(theActiveTask.getTaskStatus() == 0){
+                textTaskStatus.setText("TASK ACTIVE");
+                textTaskStatus.setTextColor(Color.GREEN);
+            }else if (theActiveTask.getTaskStatus() == 1) {
+                textTaskStatus.setText("TASK DONE");
+                textTaskStatus.setTextColor(Color.RED);
+            }else {
+                textTaskStatus.setText("TASK STATUS ERROR");
+                textTaskStatus.setTextColor(Color.RED);
+            }
+
+//            TextView textTaskName = (TextView) tasklistview.findViewById(R.id.textTaskName);
+//            TextView textTaskDesc = (TextView) tasklistview.findViewById(R.id.textTaskDesc);
+//            textTaskName.setText(theStore.getStoreName()+"_"+theStore.getTASK().getTaskName());
+//            textTaskDesc.setText(theStore.getTASK().getTaskDetail());
+
+
+
+
 
             Calendar targetTime = Calendar.getInstance();
             targetTime.set(Calendar.HOUR_OF_DAY, 23);
@@ -163,17 +215,16 @@ public class TaskFragment extends Fragment {
             new CountDownTimer(targetTime.getTimeInMillis()-System.currentTimeMillis(), 1000) {
 
                 public void onTick(long millisUntilFinished) {
-                    textTaskCountDown.setText(millisUntilFinished/1000+"sec left...");
+                    textTaskTimeLeft.setText(millisUntilFinished/1000+"sec left...");
                 }
 
                 public void onFinish() {
-                    textTaskCountDown.setText("time out+");
+                    textTaskTimeLeft.setText("time out+");
                 }
 
             }.start();
 
 
-            textTaskCountDown.setText(remainTime+"sec left...");
 
             return tasklistview;
         }

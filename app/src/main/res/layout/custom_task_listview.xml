@@ -7,63 +7,88 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="173dp"
+        android:layout_height="175dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true">
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/taskTextCountDown"
-                android:layout_width="match_parent"
+                android:id="@+id/textStoreInfo"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="8dp"
                 android:text="TextView"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteX="326dp" />
-
-            <TextView
-                android:id="@+id/taskTextName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="TextView"
-                android:textAlignment="center"
                 android:textSize="24sp"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteX="143dp" />
+                android:textStyle="bold|italic"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textTaskName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textStoreInfo" />
+
+            <TextView
+                android:id="@+id/textTaskDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="166dp"
+                android:layout_marginStart="160dp"
+                android:layout_marginTop="20dp"
+                android:text="TextView"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textTaskName" />
+
+            <TextView
+                android:id="@+id/textTaskTimeLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ProgressBar
                 android:id="@+id/progressTaskBar"
-                style="?android:attr/progressBarStyleHorizontal"
+                style="@android:style/Widget.Material.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="51dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/taskTextName"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteX="72dp" />
+                android:layout_height="31dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textTaskDesc" />
 
             <TextView
-                android:id="@+id/taskTextDesc"
-                android:layout_width="match_parent"
+                android:id="@+id/textTaskReward"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:fontFamily="monospace"
+                android:layout_marginEnd="164dp"
+                android:layout_marginStart="162dp"
                 android:text="TextView"
-                android:textAlignment="center"
-                android:textSize="12sp"
-                android:textStyle="italic"
-                app:layout_constraintTop_toBottomOf="@+id/progressTaskBar"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteX="164dp" />
-        </LinearLayout>
+                android:textSize="14sp"
+                android:textStyle="bold|italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/progressTaskBar" />
+
+            <TextView
+                android:id="@+id/textTaskStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="TextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textTaskTimeLeft" />
+
+        </android.support.constraint.ConstraintLayout>
 
     </FrameLayout>
 

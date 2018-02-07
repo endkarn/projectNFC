@@ -3,6 +3,7 @@ package com.karnjang.firebasedemo.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
@@ -41,7 +42,8 @@ public class TheStoreTaskFragment extends Fragment {
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
     DatabaseReference dbStoreRef = dbref.child("STORE");
     DatabaseReference dbUserRef = dbref.child("users");
-
+    Long longUserProgress;
+    Long longTaskStatus;
 
     SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 
@@ -60,6 +62,7 @@ public class TheStoreTaskFragment extends Fragment {
         final TextView textProgressBar = (TextView) thestoretaskview.findViewById(R.id.textTaskProgressBar);
         final TextView textTaskTimeLeft = (TextView) thestoretaskview.findViewById(R.id.textTaskTimeLeft);
         final TextView textTaskRewards = (TextView) thestoretaskview.findViewById(R.id.textTaskRewards);
+        final TextView textTaskStatus = (TextView) thestoretaskview.findViewById(R.id.textTaskStatus);
         SharedPreferences userPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
 
         final String userName = userPref.getString("SH_USERNAME",null);
@@ -81,15 +84,25 @@ public class TheStoreTaskFragment extends Fragment {
 
                     progressTaskBar.setMax(taskProgress);
 
-                    dbUserRef.child(userName).addValueEventListener(new ValueEventListener() {
+                    dbUserRef.child(userName).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot userSnapshot) {
 
-                            Long longUserProgress = (Long) userSnapshot.child("ACTIVETASK").child(storeId).child("currentCondition").getValue();
-                            Long longTaskStatus = (Long) userSnapshot.child("ACTIVETASK").child(storeId).child("taskStatus").getValue();
+                            longUserProgress = (Long) userSnapshot.child("ACTIVETASK").child(storeId).child("currentCondition").getValue();
+                            longTaskStatus = (Long) userSnapshot.child("ACTIVETASK").child(storeId).child("taskStatus").getValue();
                             int userProgress = longUserProgress.intValue();
                             int intTaskStatus = longTaskStatus.intValue();
 
+                            if(intTaskStatus == 0){
+                                textTaskStatus.setText("TASK ACTIVE");
+                                textTaskStatus.setTextColor(Color.GREEN);
+                            }else if (intTaskStatus == 1) {
+                                textTaskStatus.setText("TASK DONE");
+                                textTaskStatus.setTextColor(Color.RED);
+                            }else {
+                                textTaskStatus.setText("TASK STATUS ERROR");
+                                textTaskStatus.setTextColor(Color.RED);
+                            }
 
                             if (userProgress == taskProgress && intTaskStatus == 0){
                                 User user = userSnapshot.getValue(User.class);

@@ -10,8 +10,6 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
-import android.nfc.tech.Ndef;
-import android.nfc.tech.NdefFormatable;
 import android.nfc.tech.NfcF;
 import android.os.CountDownTimer;
 import android.os.Parcelable;
@@ -24,25 +22,22 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.karnjang.firebasedemo.models.Item;
-
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
+import com.karnjang.firebasedemo.models.User;
 import java.util.Arrays;
-import java.util.Locale;
+
 
 public class ExchangeItemActivity extends AppCompatActivity {
 
     NfcAdapter nfcAdapter;
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
     DatabaseReference dbStoreRef = dbref.child("STORE");
+    DatabaseReference dbUserRef = dbref.child("users");
 
     private TextView textNfc;
 
@@ -53,6 +48,7 @@ public class ExchangeItemActivity extends AppCompatActivity {
     String waitingTag = "";
     Item itemEx;
     String storeId;
+    String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +59,7 @@ public class ExchangeItemActivity extends AppCompatActivity {
         storeId = iIntent.getExtras().getString("StoreID");
         String ItemId = iIntent.getExtras().getString("ItemID");
         SharedPreferences userPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        String userName = userPref.getString("SH_USERNAME","");
+        userName = userPref.getString("SH_USERNAME","");
 
         ImageView imageItem = findViewById(R.id.imageItem);
         textNfc = findViewById(R.id.textNfc);
@@ -73,7 +69,7 @@ public class ExchangeItemActivity extends AppCompatActivity {
         final TextView textItemName = findViewById(R.id.textItemName);
         final TextView textItemPrice = findViewById(R.id.textItemPrice);
         final TextView textItemStore = findViewById(R.id.textItemStore);
-        final ToggleButton buttonTimeOut = findViewById(R.id.buttonTimeOut);
+        final Button buttonTimeOut = findViewById(R.id.buttonTimeOut);
 
         dbStoreRef.child(storeId).child("ITEMS").child(ItemId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -92,6 +88,10 @@ public class ExchangeItemActivity extends AppCompatActivity {
 
             }
         });
+
+
+
+
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if(nfcAdapter != null){
@@ -188,6 +188,8 @@ public class ExchangeItemActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext()
                             , "Close dialog", Toast.LENGTH_SHORT);
                     dialog.cancel();
+                    finish();
+
                 }
             });
 
@@ -197,7 +199,26 @@ public class ExchangeItemActivity extends AppCompatActivity {
             textDiItemName.setText(itemEx.getItemName());
             textDiItemStore.setText(storeId);
 
+            dbUserRef.child(userName).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot userSnapshot) {
+
+                    User user = userSnapshot.getValue(User.class);
+                    Long longUserProgress = (Long) userSnapshot.child("ACTIVETASK").child(storeId).child("currentCondition").getValue();
+                    int userProgress = longUserProgress.intValue();
+
+                    dbUserRef.child(userName).child("totalPoints").setValue(user.getTotalPoints() - itemEx.getItemPrice());
+                    dbUserRef.child(userName).child("ACTIVETASK").child(storeId).child("currentCondition").setValue(userProgress+1);
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    //do nothing
+                }
+            });
+
             dialog.show();
+
+
         }else{
 
         }
