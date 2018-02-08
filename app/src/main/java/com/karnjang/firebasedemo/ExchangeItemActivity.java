@@ -126,6 +126,7 @@ public class ExchangeItemActivity extends AppCompatActivity {
 
             public void onFinish() {
                 buttonTimeOut.setText("Time Out!");
+                finish();
 
             }
         }.start();
@@ -209,6 +210,7 @@ public class ExchangeItemActivity extends AppCompatActivity {
 
                     dbUserRef.child(userName).child("totalPoints").setValue(user.getTotalPoints() - itemEx.getItemPrice());
                     dbUserRef.child(userName).child("ACTIVETASK").child(storeId).child("currentCondition").setValue(userProgress+1);
+                    dbStoreRef.child(storeId).child("ITEMS").child(itemEx.getItemId()).child("itemAmount").setValue(itemEx.getItemAmount()-1);
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {

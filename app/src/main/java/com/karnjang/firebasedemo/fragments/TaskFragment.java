@@ -47,9 +47,6 @@ public class TaskFragment extends Fragment {
     public long remainTime;
     String userName;
 
-
-    String[] TASKNAME = {"TASK00", "TASK01", "TASK02", "TASK03", "TASK04", "TASK05", "TASK06"};
-    String[] TASKDESC = {"DESC00", "DESC01", "DESC02", "DESC03", "DESC04", "DESC05", "DESC06"};
     ArrayList<Store> storeLists = new ArrayList<>();
     ArrayList<ActiveTask> activeTaskLists = new ArrayList<>();
 
@@ -62,35 +59,16 @@ public class TaskFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View taskview = inflater.inflate(R.layout.fragment_task, container, false);
-        // Inflate the layout for this fragment
         final ListView listViewTask = (ListView) taskview.findViewById(R.id.listViewTask);
 
         SharedPreferences userPref = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         userName = userPref.getString("SH_USERNAME","");
-        Calendar targetTime = Calendar.getInstance();
-        targetTime.set(Calendar.HOUR_OF_DAY, 23);
-        targetTime.set(Calendar.MINUTE, 59);
-
-        new CountDownTimer(targetTime.getTimeInMillis()-System.currentTimeMillis(), 1000) {
-
-            public void onTick(long millisUntilFinished) {
-                remainTime = millisUntilFinished/1000;
-            }
-
-            public void onFinish() {
-                remainTime = 0;
-            }
-
-        }.start();
 
         Log.i("info TaskFragment","Start Listener");
-        dbStoreRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        dbStoreRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 for (DataSnapshot storeSnapshot : dataSnapshot.getChildren()) {
-
-
                     Log.i("info TaskFragment", "data snapshot storekey " + storeSnapshot.getKey());
                     Log.i("info TaskFragment", "data snapshot value " + storeSnapshot.getValue());
                     Store oneStore = new Store();
@@ -102,26 +80,21 @@ public class TaskFragment extends Fragment {
                     oneStore.setStoreName(storeName);
                     oneStore.setTASK(taskStore);
                     storeLists.add(oneStore);
-
                     Log.i("info TaskFragment", "Store Added" + storeId);
 
                 }
-
                 dbUserRef.child(userName).child("ACTIVETASK").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataTaskSnapshot) {
                         for(DataSnapshot activeTaskSnapshot : dataTaskSnapshot.getChildren()){
-                            ActiveTask activeTask = new ActiveTask();
+                            ActiveTask activeTask = activeTaskSnapshot.getValue(ActiveTask.class);
                             activeTaskLists.add(activeTask);
                         }
                     }
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
                     }
                 });
-
 
                 CustomTaskAdapter customTaskAdapter = new CustomTaskAdapter();
                 listViewTask.setAdapter(customTaskAdapter);
@@ -133,17 +106,16 @@ public class TaskFragment extends Fragment {
                         intent.putExtra("storeID", storeLists.get(i).getStoreID());
                         startActivity(intent);
 
-
                     }
                 });
+
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
             });
-
-        Log.i("Info", "SET ADAPTER TO TASK FRAGMENT");
 
 
         return taskview;
@@ -158,9 +130,8 @@ public class TaskFragment extends Fragment {
 
         @Override
         public Object getItem(int i) {
-            return null;
+            return storeLists.get(i);
         }
-
 
         @Override
         public long getItemId(int i) {
@@ -170,34 +141,66 @@ public class TaskFragment extends Fragment {
         @Override
         public View getView(int i, View tasklistview, ViewGroup viewGroup) {
             tasklistview = getLayoutInflater().inflate(R.layout.custom_task_listview, null);
-            Store theStore = storeLists.get(i);
-            ActiveTask theActiveTask = activeTaskLists.get(i);
 
-            TextView textStoreInfo = tasklistview.findViewById(R.id.textStoreInfo);
-            TextView textTaskName = tasklistview.findViewById(R.id.textTaskName);
-            TextView textTaskDesc = tasklistview.findViewById(R.id.textTaskDesc);
-            final TextView textTaskTimeLeft = tasklistview.findViewById(R.id.textTaskTimeLeft);
-            ProgressBar progressTaskBar = tasklistview.findViewById(R.id.progressTaskBar);
-            TextView textTaskReward = tasklistview.findViewById(R.id.textTaskReward);
-            TextView textTaskStatus = tasklistview.findViewById(R.id.textTaskStatus);
+            if(!activeTaskLists.isEmpty()){
+                Store theStore = storeLists.get(i);
+                ActiveTask theActiveTask = activeTaskLists.get(i);
 
-            textStoreInfo.setText(theStore.getStoreID()+"_"+theStore.getStoreName());
-            textTaskName.setText(theStore.getTASK().getTaskName());
-            textTaskDesc.setText(theStore.getTASK().getTaskDetail());
-            textTaskReward.setText("+"+theStore.getTASK().getTaskExpReward()+"XP  / +"+theStore.getTASK().getTaskPointReward()+"PT");
-            progressTaskBar.setMax(theStore.getTASK().getTaskConditionForCompleteTask());
-            progressTaskBar.setProgress(theActiveTask.currentCondition);
+                TextView textStoreInfo = tasklistview.findViewById(R.id.textStoreInfo);
+                TextView textTaskName = tasklistview.findViewById(R.id.textTaskName);
+                TextView textTaskDesc = tasklistview.findViewById(R.id.textTaskDesc);
+                final TextView textTaskTimeLeft = tasklistview.findViewById(R.id.textTaskTimeLeft);
+                ProgressBar progressTaskBar = tasklistview.findViewById(R.id.progressTaskBar);
+                TextView textTaskReward = tasklistview.findViewById(R.id.textTaskReward);
+                TextView textTaskStatus = tasklistview.findViewById(R.id.textTaskStatus);
 
-            if(theActiveTask.getTaskStatus() == 0){
-                textTaskStatus.setText("TASK ACTIVE");
-                textTaskStatus.setTextColor(Color.GREEN);
-            }else if (theActiveTask.getTaskStatus() == 1) {
-                textTaskStatus.setText("TASK DONE");
-                textTaskStatus.setTextColor(Color.RED);
-            }else {
-                textTaskStatus.setText("TASK STATUS ERROR");
-                textTaskStatus.setTextColor(Color.RED);
+                if(theStore != null && theActiveTask != null){
+                    textStoreInfo.setText(theStore.getStoreID()+"_"+theStore.getStoreName());
+                    textTaskName.setText(theStore.getTASK().getTaskName());
+                    textTaskDesc.setText(theStore.getTASK().getTaskDetail() + ": "+theActiveTask.getCurrentCondition()+ "/" + theStore.getTASK().getTaskConditionForCompleteTask());
+                    textTaskReward.setText("+"+theStore.getTASK().getTaskExpReward()+"XP  / +"+theStore.getTASK().getTaskPointReward()+"PT");
+                    progressTaskBar.setMax(theStore.getTASK().getTaskConditionForCompleteTask());
+                    progressTaskBar.setProgress(theActiveTask.getCurrentCondition());
+                    if(theActiveTask.getTaskStatus() == 0){
+                        textTaskStatus.setText("TASK ACTIVE");
+                        textTaskStatus.setTextColor(Color.GREEN);
+                    }else if (theActiveTask.getTaskStatus() == 1) {
+                        textTaskStatus.setText("TASK DONE");
+                        textTaskStatus.setTextColor(Color.RED);
+                    }else {
+                        textTaskStatus.setText("TASK STATUS ERROR");
+                        textTaskStatus.setTextColor(Color.RED);
+                    }
+                }
+
+                Calendar targetTime = Calendar.getInstance();
+                targetTime.set(Calendar.HOUR_OF_DAY, 23);
+                targetTime.set(Calendar.MINUTE, 59);
+
+                new CountDownTimer(targetTime.getTimeInMillis()-System.currentTimeMillis(), 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                        textTaskTimeLeft.setText(millisUntilFinished/1000+"sec left...");
+                    }
+
+                    public void onFinish() {
+                        textTaskTimeLeft.setText("time out+");
+                    }
+
+                }.start();
             }
+
+
+
+
+
+
+
+
+
+
+
+
 
 //            TextView textTaskName = (TextView) tasklistview.findViewById(R.id.textTaskName);
 //            TextView textTaskDesc = (TextView) tasklistview.findViewById(R.id.textTaskDesc);
@@ -208,21 +211,6 @@ public class TaskFragment extends Fragment {
 
 
 
-            Calendar targetTime = Calendar.getInstance();
-            targetTime.set(Calendar.HOUR_OF_DAY, 23);
-            targetTime.set(Calendar.MINUTE, 59);
-
-            new CountDownTimer(targetTime.getTimeInMillis()-System.currentTimeMillis(), 1000) {
-
-                public void onTick(long millisUntilFinished) {
-                    textTaskTimeLeft.setText(millisUntilFinished/1000+"sec left...");
-                }
-
-                public void onFinish() {
-                    textTaskTimeLeft.setText("time out+");
-                }
-
-            }.start();
 
 
 

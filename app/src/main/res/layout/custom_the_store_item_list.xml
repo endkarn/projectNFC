@@ -39,6 +39,15 @@
                     android:text="TextView"
                     android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/textItemAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textAlignment="textStart"
+                    android:textColor="?android:attr/colorFocusedHighlight"
+                    android:textStyle="italic" />
+
             </LinearLayout>
 
             <Button

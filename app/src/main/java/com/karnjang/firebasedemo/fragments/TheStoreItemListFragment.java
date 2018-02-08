@@ -106,6 +106,7 @@ public class TheStoreItemListFragment extends Fragment {
             ImageView imageItemView = (ImageView) theitemlistview.findViewById(R.id.imageItemView);
             TextView textItemName = (TextView) theitemlistview.findViewById(R.id.textItemName);
             TextView textItemPrice = (TextView) theitemlistview.findViewById(R.id.textItemPrice);
+            TextView textItemAmount = (TextView) theitemlistview.findViewById(R.id.textItemAmount);
             Button button = (Button) theitemlistview.findViewById(R.id.buttonItem) ;
 
             final Item item = itemArrayList.get(i);
@@ -115,6 +116,7 @@ public class TheStoreItemListFragment extends Fragment {
             imageItemView.setImageResource(IMAGES[item.getItemType()]);
             textItemName.setText(item.getItemName());
             textItemPrice.setText(""+item.getItemPrice());
+            textItemAmount.setText("Amount:"+item.getItemAmount());
             button.setText("USE"+item.getItemPrice());
 
             button.setOnClickListener(new View.OnClickListener() {

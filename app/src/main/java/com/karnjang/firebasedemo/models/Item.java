@@ -10,6 +10,7 @@ public class Item {
     private String itemName;
     private int itemPrice;
     private int itemType;
+    private int itemAmount;
 
     public Item (){
 
@@ -48,5 +49,13 @@ public class Item {
 
     public void setItemType(int itemType) {
         this.itemType = itemType;
+    }
+
+    public int getItemAmount() {
+        return itemAmount;
+    }
+
+    public void setItemAmount(int itemAmount) {
+        this.itemAmount = itemAmount;
     }
 }
