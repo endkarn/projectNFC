@@ -39,6 +39,11 @@ public class ExchangeItemActivity extends AppCompatActivity {
     DatabaseReference dbStoreRef = dbref.child("STORE");
     DatabaseReference dbUserRef = dbref.child("users");
 
+    int[] IMAGES = {R.drawable.drink1,
+            R.drawable.drink1,
+            R.drawable.drink2,
+            R.drawable.drink3};
+
     private TextView textNfc;
 
     private PendingIntent nfcPendingIntent;
@@ -70,6 +75,7 @@ public class ExchangeItemActivity extends AppCompatActivity {
         final TextView textItemPrice = findViewById(R.id.textItemPrice);
         final TextView textItemStore = findViewById(R.id.textItemStore);
         final Button buttonTimeOut = findViewById(R.id.buttonTimeOut);
+        final ImageView imItem = findViewById(R.id.imageItem);
 
         dbStoreRef.child(storeId).child("ITEMS").child(ItemId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -81,6 +87,7 @@ public class ExchangeItemActivity extends AppCompatActivity {
                 textItemName.setText("Item : "+itemEx.getItemName());
                 textItemPrice.setText("Price : "+itemEx.getItemPrice());
                 textItemStore.setText("Ref Store : "+storeId);
+                imItem.setImageResource(IMAGES[itemEx.getItemType()]);
             }
 
             @Override
@@ -196,9 +203,11 @@ public class ExchangeItemActivity extends AppCompatActivity {
 
             TextView textDiItemName = (TextView)dialog.findViewById(R.id.textDiItemName);
             TextView textDiItemStore = (TextView)dialog.findViewById(R.id.textDiItemStore);
+            ImageView imDiItem = (ImageView)dialog.findViewById(R.id.imageDiItem);
 
             textDiItemName.setText(itemEx.getItemName());
             textDiItemStore.setText(storeId);
+            imDiItem.setImageResource(IMAGES[itemEx.getItemType()]);
 
             dbUserRef.child(userName).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

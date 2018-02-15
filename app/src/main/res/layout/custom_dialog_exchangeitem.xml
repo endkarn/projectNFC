@@ -33,7 +33,7 @@
             android:layout_height="10dp" />
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/imageDiItem"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             app:srcCompat="@android:drawable/btn_star_big_on" />
@@ -65,7 +65,7 @@
         android:layout_marginEnd="148dp"
         android:layout_marginStart="148dp"
         android:layout_marginTop="8dp"
-        android:text="Button"
+        android:text="DONE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />

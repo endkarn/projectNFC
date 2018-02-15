@@ -37,7 +37,10 @@ public class TheStoreItemListFragment extends Fragment {
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
     DatabaseReference dbStoreRef = dbref.child("STORE");
 
-    int[] IMAGES = {R.drawable.store_image1, R.drawable.store_image2, R.drawable.store_image1, R.drawable.store_image2, R.drawable.store_image1, R.drawable.store_image2};
+    int[] IMAGES = {R.drawable.drink1,
+            R.drawable.drink1,
+            R.drawable.drink2,
+            R.drawable.drink3};
     String[] NAMES = {"STORE00", "STORE01", "STORE02", "STORE03", "STORE04", "STORE05", "STORE06"};
     String[] PRICE = {"100", "150", "120", "133", "444", "555", "666"};
     ArrayList<Item> itemArrayList = new ArrayList<>();
@@ -117,19 +120,26 @@ public class TheStoreItemListFragment extends Fragment {
             textItemName.setText(item.getItemName());
             textItemPrice.setText(""+item.getItemPrice());
             textItemAmount.setText("Amount:"+item.getItemAmount());
-            button.setText("USE"+item.getItemPrice());
 
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent itemIntent = new Intent(getActivity(), ExchangeItemActivity.class);
-                    itemIntent.putExtra("StoreID", storeId);
-                    itemIntent.putExtra("ItemID", item.getItemId());
+            if(item.getItemAmount() > 0){
+                button.setText("USE"+item.getItemPrice());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent itemIntent = new Intent(getActivity(), ExchangeItemActivity.class);
+                        itemIntent.putExtra("StoreID", storeId);
+                        itemIntent.putExtra("ItemID", item.getItemId());
 
-                    startActivity(itemIntent);
-                    getActivity().finish();
-                }
-            });
+                        startActivity(itemIntent);
+                        getActivity().finish();
+                    }
+                });
+            }else {
+                button.setText("USE"+item.getItemPrice());
+                button.setEnabled(false);
+            }
+
+
             return theitemlistview;
         }
     }

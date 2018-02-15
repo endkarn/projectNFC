@@ -6,8 +6,8 @@ package com.karnjang.firebasedemo.models;
 
 public class User {
     public String username;
-    public String password;
     public int totalXp;
+    public String password;
     public int totalPoints;
 
     public User(){

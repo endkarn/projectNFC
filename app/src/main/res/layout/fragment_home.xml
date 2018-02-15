@@ -13,19 +13,43 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.constraint.ConstraintLayout
-            android:scaleType="fitCenter"
+        <ss.com.bannerslider.views.BannerSlider
+            android:id="@+id/banner_slider_home"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="138dp"
+            android:scaleType="fitCenter"
+            app:defaultIndicators="circle"
+            app:interval="5000"
+            app:loopSlides="true">
 
-            <ss.com.bannerslider.views.BannerSlider
-                android:id="@+id/banner_slider_home"
-                android:layout_width="match_parent"
-                android:layout_height="262dp"
-                android:scaleType="fitCenter"
-                app:defaultIndicators="circle"
-                app:interval="5000"
-                app:loopSlides="true"></ss.com.bannerslider.views.BannerSlider>
+        </ss.com.bannerslider.views.BannerSlider>
+
+        <ss.com.bannerslider.views.BannerSlider
+            android:id="@+id/banner_slider_home1"
+            android:layout_width="match_parent"
+            android:layout_height="371dp"
+            android:scaleType="fitCenter"
+            app:defaultBanner="4"
+            app:defaultIndicators="circle"
+            app:interval="4000"
+            app:loopSlides="true">
+
+        </ss.com.bannerslider.views.BannerSlider>
+
+        <ss.com.bannerslider.views.BannerSlider
+            android:id="@+id/banner_slider_home2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            app:defaultIndicators="circle"
+            app:interval="6000"
+            app:loopSlides="true"></ss.com.bannerslider.views.BannerSlider>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter">
+
         </android.support.constraint.ConstraintLayout>
 
         <LinearLayout
@@ -33,24 +57,6 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <ss.com.bannerslider.views.BannerSlider
-                android:id="@+id/banner_slider_home1"
-                android:layout_width="194dp"
-                android:layout_height="212dp"
-                android:scaleType="fitCenter"
-                app:defaultBanner="4"
-                app:defaultIndicators="circle"
-                app:interval="4000"
-                app:loopSlides="true"></ss.com.bannerslider.views.BannerSlider>
-
-            <ss.com.bannerslider.views.BannerSlider
-                android:id="@+id/banner_slider_home2"
-                android:layout_width="match_parent"
-                android:layout_height="212dp"
-                android:scaleType="fitCenter"
-                app:defaultIndicators="circle"
-                app:interval="6000"
-                app:loopSlides="true"></ss.com.bannerslider.views.BannerSlider>
         </LinearLayout>
 
     </LinearLayout>

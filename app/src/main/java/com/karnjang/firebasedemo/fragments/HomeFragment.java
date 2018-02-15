@@ -41,12 +41,12 @@ public class HomeFragment extends Fragment {
         List<Banner> deal = new ArrayList<>();
         banners.add(new RemoteBanner("https://i.imgur.com/CRWHpLh.png"));
         banners.add(new RemoteBanner("https://i.imgur.com/lI99iNY.png"));
-        banners.add(new RemoteBanner("https://i.imgur.com/cHyU97V.png"));
-        deal.add(new RemoteBanner("https://i.imgur.com/hgvu8d8.png"));
-        deal.add(new RemoteBanner("https://i.imgur.com/albdO1L.png"));
-        deal.add(new RemoteBanner("https://i.imgur.com/hyElK5r.png"));
-        deal.add(new RemoteBanner("https://i.imgur.com/2pq75Dg.png"));
-        deal.add(new RemoteBanner("https://i.imgur.com/JEODChI.png"));
+        banners.add(new RemoteBanner("https://i.imgur.com/qCTJ0UX.png"));
+        deal.add(new RemoteBanner("https://i.imgur.com/ifoth61.jpg"));
+        deal.add(new RemoteBanner("https://i.imgur.com/zQLLCCm.png"));
+        deal.add(new RemoteBanner("https://i.imgur.com/JPninMD.jpg"));
+        deal.add(new RemoteBanner("https://i.imgur.com/qLwPmSg.jpg"));
+        deal.add(new RemoteBanner("https://i.imgur.com/TSLaGMH.jpg"));
 
         bannerSlider.setBanners(banners);
         bannerSlider1.setBanners(deal);

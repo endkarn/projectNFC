@@ -1,6 +1,9 @@
 package com.karnjang.firebasedemo.fragments;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,8 +36,8 @@ public class RankingFragment extends Fragment {
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
     DatabaseReference dbUserRef = dbref.child("users");
 
-    String[] RANKNAME = {"USERNAME01", "USERNAME02", "USERNAME03", "USERNAME04", "USERNAME05", "USERNAME06"};
-    String[] RANKLEVEL = {"99", "92", "85", "75", "62", "30"};
+
+    String spUsername = "KARNAWAT";
 
     ArrayList<User> userArrayList = new ArrayList<>();
 
@@ -54,8 +57,9 @@ public class RankingFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()){
+                    Log.i("USER info","DATA[] "+userSnapshot.getValue());
                     User oneUser = userSnapshot.getValue(User.class);
-                    Log.i("USER info","data " +oneUser.getUsername() + " " +oneUser.getTotalXp());
+                    Log.i("USER iiiii","data " +oneUser.getUsername() + " " +oneUser.getTotalXp());
                     userArrayList.add(oneUser);
                 }
 
@@ -102,6 +106,10 @@ public class RankingFragment extends Fragment {
             //Sorting by DESC
             User theUser = userArrayList.get(getCount() - 1 - i);
             textRankName.setText(theUser.getUsername());
+            if(theUser.getUsername().equals(spUsername)){
+                textRankName.setTextColor(Color.GREEN);
+                textRankLevel.setTextColor(Color.GREEN);
+            }
             textRankLevel.setText(theUser.getUserLevel());
             return ranklistview;
         }

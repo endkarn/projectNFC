@@ -6,8 +6,6 @@
     android:layout_height="wrap_content"
     tools:context=".fragments.UserInfoFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,7 +22,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
-                android:src="@mipmap/ic_launcher_round"
+                android:src="@drawable/profile_cir"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

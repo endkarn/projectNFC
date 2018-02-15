@@ -108,12 +108,13 @@ public class TheStoreTaskFragment extends Fragment {
                                 User user = userSnapshot.getValue(User.class);
                                 Task task = taskSnapshot.getValue(Task.class);
                                 ActiveTask userTask = userSnapshot.child("ACTIVETASK").child(storeId).getValue(ActiveTask.class);
-                                user.setTotalPoints(user.getTotalPoints()+task.getTaskPointReward());
-                                user.setTotalXp(user.getTotalXp()+task.getTaskExpReward());
+
+
 
                                 userTask.setTaskStatus(1);
                                 userTask.setStoreId(storeId);
-                                dbUserRef.child(userName).setValue(user);
+                                dbUserRef.child(userName).child("totalPoints").setValue(user.getTotalPoints()+task.getTaskPointReward());
+                                dbUserRef.child(userName).child("totalXp").setValue(user.getTotalXp()+task.getTaskExpReward());
                                 dbUserRef.child(userName).child("ACTIVETASK").child(storeId).setValue(userTask);
 
 //                                Map<String,Object> taskMap = new HashMap<String,Object>();

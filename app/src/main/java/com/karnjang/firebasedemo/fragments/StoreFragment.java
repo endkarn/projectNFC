@@ -33,7 +33,7 @@ public class StoreFragment extends Fragment {
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
     DatabaseReference dbStoreRef = dbref.child("STORE");
 
-    int[] IMAGES = {R.drawable.store_image1, R.drawable.store_image2, R.drawable.store_image1, R.drawable.store_image2, R.drawable.store_image1, R.drawable.store_image2};
+    int[] IMAGES = {R.drawable.store01, R.drawable.store02, R.drawable.store03, R.drawable.store04, R.drawable.store_image1, R.drawable.store_image2};
 //    String[] NAMES = {"STORE00", "STORE01", "STORE02", "STORE03", "STORE04", "STORE05", "STORE06"};
 //    String[] DESCS = {"DESC00", "DESC01", "DESC02", "DESC03", "DESC04", "DESC05", "DESC06"};
     ArrayList<Store> storeLists = new ArrayList<>();
