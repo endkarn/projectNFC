@@ -35,8 +35,8 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         BannerSlider bannerSlider = (BannerSlider) view.findViewById(R.id.banner_slider_home);
-        BannerSlider bannerSlider1 = (BannerSlider) view.findViewById(R.id.banner_slider_home1);
-        BannerSlider bannerSlider2 = (BannerSlider) view.findViewById(R.id.banner_slider_home2);
+//        BannerSlider bannerSlider1 = (BannerSlider) view.findViewById(R.id.banner_slider_home1);
+//        BannerSlider bannerSlider2 = (BannerSlider) view.findViewById(R.id.banner_slider_home2);
         List<Banner> banners = new ArrayList<>();
         List<Banner> deal = new ArrayList<>();
         banners.add(new RemoteBanner("https://i.imgur.com/CRWHpLh.png"));
@@ -49,8 +49,8 @@ public class HomeFragment extends Fragment {
         deal.add(new RemoteBanner("https://i.imgur.com/TSLaGMH.jpg"));
 
         bannerSlider.setBanners(banners);
-        bannerSlider1.setBanners(deal);
-        bannerSlider2.setBanners(deal);
+//        bannerSlider1.setBanners(deal);
+//        bannerSlider2.setBanners(deal);
         return view;
 
     }

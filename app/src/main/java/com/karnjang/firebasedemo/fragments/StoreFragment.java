@@ -53,6 +53,7 @@ public class StoreFragment extends Fragment {
 
         final ListView listViewStore = (ListView) storeview.findViewById(R.id.listViewStore);
 
+
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 //               getContext(),
 //               android.R.layout.simple_list_item_1,

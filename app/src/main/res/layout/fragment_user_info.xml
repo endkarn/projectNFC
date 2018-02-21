@@ -41,6 +41,7 @@
                     android:layout_marginTop="4dp"
                     android:text="username  username"
                     android:textAlignment="viewStart"
+                    android:textColor="@color/cardview_light_background"
                     android:textSize="24sp"
                     android:textStyle="bold|italic"
                     app:layout_constraintRight_toRightOf="parent"
@@ -54,6 +55,7 @@
                     android:layout_marginTop="4dp"
                     android:text="totalPoint"
                     android:textAlignment="viewStart"
+                    android:textColor="@color/cardview_dark_background"
                     android:textStyle="italic"
                     app:layout_constraintStart_toEndOf="@+id/imageView3"
                     app:layout_constraintTop_toBottomOf="@+id/textUsername" />
