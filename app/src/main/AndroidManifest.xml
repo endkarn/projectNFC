@@ -29,6 +29,10 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".TheStoreActivity" />
         <activity android:name=".ExchangeItemActivity"></activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

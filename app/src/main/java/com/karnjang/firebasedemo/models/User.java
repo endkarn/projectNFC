@@ -1,5 +1,8 @@
 package com.karnjang.firebasedemo.models;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 /**
  * Created by ssppy on 14-Sep-17.
  */
@@ -54,5 +57,12 @@ public class User {
     public String getUserLevel(){
         String userLevel = Integer.toString(totalXp/100);
         return userLevel;
+    }
+
+    public String getDefUser(Context context){
+        SharedPreferences userPref = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        String userName = userPref.getString("SH_USERNAME","");
+        return userName;
+
     }
 }

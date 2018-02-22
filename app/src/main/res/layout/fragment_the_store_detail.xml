@@ -21,16 +21,15 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="0dp" />
+            tools:layout_editor_absoluteX="151dp" />
 
         <TextView
             android:id="@+id/textTheStoreName"
             android:layout_width="wrap_content"
             android:layout_height="22dp"
-            android:layout_marginTop="8dp"
             android:text="STORE_NAME"
             app:layout_constraintTop_toBottomOf="@+id/textTheStoreId"
-            tools:layout_editor_absoluteX="0dp" />
+            tools:layout_editor_absoluteX="147dp" />
 
         <ImageView
             android:id="@+id/imageTheStore"
