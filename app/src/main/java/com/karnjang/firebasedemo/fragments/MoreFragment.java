@@ -12,10 +12,16 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.karnjang.firebasedemo.R;
 import com.karnjang.firebasedemo.models.Action;
 import com.karnjang.firebasedemo.models.User;
 
+import java.security.PrivateKey;
 import java.util.ArrayList;
 
 /**
@@ -23,10 +29,15 @@ import java.util.ArrayList;
  */
 public class MoreFragment extends Fragment {
 
-    User myUser = new User();
+    DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference dbUserRef = dbref.child("users");
+
+    User myDefUser = new User();
     ArrayList<Action> listAction = new ArrayList<>();
     Action newAction = new Action("sad123ds","+100exp +100pt",
             "SC007","QUEST COMPLETE","today");
+
+    TextView textUserLevel,textUsername,textUserTotalPoint,textUserExp,textUserLevelCard;
 
 
     public MoreFragment() {
@@ -34,6 +45,9 @@ public class MoreFragment extends Fragment {
 
         listAction.add(newAction);
         listAction.add(newAction);
+        listAction.add(newAction);
+        listAction.add(newAction);
+
 
     }
 
@@ -45,8 +59,34 @@ public class MoreFragment extends Fragment {
         View moreFragment = inflater.inflate(R.layout.fragment_more, container, false);
         ListView listAction = (ListView) moreFragment.findViewById(R.id.listViewAction);
 
-        String username = myUser.getDefUser(this.getContext());
+        textUserLevel = moreFragment.findViewById(R.id.textUserLevel);
+        textUsername = moreFragment.findViewById(R.id.textUsername);
+        textUserTotalPoint = moreFragment.findViewById(R.id.textUserTotalPoint);
+        textUserExp = moreFragment.findViewById(R.id.textUserExp);
+        textUserLevelCard = moreFragment.findViewById(R.id.textUserLevelCard);
+
+        String username = myDefUser.getDefUser(this.getContext());
         Log.i("INFO MORE","SHOW MEEEE "+username);
+
+        User getuser = new User();
+
+        dbUserRef.child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User getuser = dataSnapshot.getValue(User.class);
+                Log.i("MORE INFO","my user data snap"+dataSnapshot.getValue());
+                textUserLevel.setText(getuser.getUserLevel());
+                textUsername.setText(getuser.getUsername());
+                textUserTotalPoint.setText(""+getuser.getTotalPoints());
+                textUserExp.setText(""+getuser.getTotalXp());
+                textUserLevelCard.setText(getuser.getUserLevelPersen());
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
+
+
+
 
 
 
@@ -90,8 +130,13 @@ public class MoreFragment extends Fragment {
             textActionDetail.setText(action.getActionDetail());
             textActionTimeStamp.setText(action.getActionTimeStamp());
 
+
+
             return actionlistview;
         }
     }
+
+
+
 
 }

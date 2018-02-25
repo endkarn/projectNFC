@@ -25,11 +25,11 @@ public class TheStoreActivity extends AppCompatActivity {
        // textTheStore = (TextView) findViewById(R.id.textTheStoreName);
        // textTheStore.setText("Store Position is " +storePosition);
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        TheStoreItemListFragment theStoreItemListFragment = new TheStoreItemListFragment();
+//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//        TheStoreItemListFragment theStoreItemListFragment = new TheStoreItemListFragment();
 
-        transaction.replace(R.id.layout_fragment_container2, theStoreItemListFragment);
-        transaction.commit();
+       // transaction.replace(R.id.fragment4, theStoreItemListFragment);
+       // transaction.commit();
 
     }
 }

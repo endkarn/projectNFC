@@ -30,6 +30,7 @@ public class UserInfoFragment extends Fragment {
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
     DatabaseReference dbUserRef = dbref.child("users");
 
+
     public UserInfoFragment() {
         // Required empty public constructor
 
@@ -40,9 +41,8 @@ public class UserInfoFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_info, container, false);
-        final TextView textUsername = (TextView) view.findViewById(R.id.textUsername);
-        final TextView totalPoint = (TextView) view.findViewById(R.id.textUserTotalPoint);
-        final TextView textUserLv = (TextView) view.findViewById(R.id.textUserLv);
+        final TextView textInfoUsername = (TextView) view.findViewById(R.id.textInfoUsername);
+        final TextView textInfoLevel = (TextView) view.findViewById(R.id.textInfoLevel);
         SharedPreferences userPref = this.getActivity().getSharedPreferences("userInfo",Context.MODE_PRIVATE);
         final String userName = userPref.getString("SH_USERNAME","");
         Log.i("Info", "USERNAME FROM Fragment UserInfo = "+userName);
@@ -54,18 +54,12 @@ public class UserInfoFragment extends Fragment {
                         Log.i("dataUserInfo","dataUserInfo+++"+dataSnapshot);
                         User user = dataSnapshot.getValue(User.class);
                         Log.i("dataUserInfo","dataUserInfo userClass+++"+user);
-                        int yourUserPoint = user.getTotalPoints();
-                        int yourUserExp = user.getTotalXp();
-                        String yourUserName = user.getUsername();
-                        Log.i("Info FRAG USERINFO ", "USERPOINT = "+yourUserPoint);
-                        Log.i("Info FRAG USERINFO ", "USEREXP = "+yourUserExp);
-                        Log.i("Info FRAG USERINFO ", "USERNAME = "+yourUserName);
+                        textInfoUsername.setText(user.getUsername());
+                        textInfoLevel.setText("Level "+user.getUserLevel());
 
 
 
-            textUsername.setText(""+yourUserName);
-            totalPoint.setText("totalpoints: "+yourUserPoint);
-            textUserLv.setText(""+yourUserExp/100);
+
 
                         //Toast.makeText(getApplicationContext(), "GETTING DATA", Toast.LENGTH_SHORT).show();
 //                        TextView userText = (TextView) findViewById(R.id.textUsername);

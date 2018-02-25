@@ -2,6 +2,16 @@ package com.karnjang.firebasedemo.models;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.security.PublicKey;
+import java.util.ArrayList;
 
 /**
  * Created by ssppy on 14-Sep-17.
@@ -13,9 +23,18 @@ public class User {
     public String password;
     public int totalPoints;
 
+
+
     public User(){
 
     }
+
+//    public User(String username, int totalXp, String password, int totalPoints) {
+//        this.username = username;
+//        this.totalXp = totalXp;
+//        this.password = password;
+//        this.totalPoints = totalPoints;
+//    }
 
     public String getUsername() {
         return username;
@@ -27,10 +46,6 @@ public class User {
 
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public User(String username, String password){
@@ -55,8 +70,17 @@ public class User {
     }
 
     public String getUserLevel(){
-        String userLevel = Integer.toString(totalXp/100);
+        Double userLevelD = ( 0.18 * Math.sqrt(totalXp));
+        Integer userLevelI = userLevelD.intValue();
+        String userLevel = Integer.toString(userLevelI);
         return userLevel;
+    }
+
+    public String getUserLevelPersen(){
+        Double userLevelD = ( 0.18 * Math.sqrt(totalXp));
+        String userLevelPer = String.valueOf(userLevelD);
+        userLevelPer = userLevelPer.substring(userLevelPer.indexOf("."),userLevelPer.indexOf(".")+3);
+        return userLevelPer+"%";
     }
 
     public String getDefUser(Context context){
