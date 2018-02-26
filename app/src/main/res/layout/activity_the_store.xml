@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimaryDark"
+    android:fitsSystemWindows="true"
     tools:context=".TheStoreActivity">
 
 
@@ -30,7 +31,7 @@
             android:id="@+id/fragment4"
             android:name="com.karnjang.firebasedemo.fragments.TheStoreItemListFragment"
             android:layout_width="match_parent"
-            android:layout_height="500dp"
+            android:layout_height="wrap_content"
             tools:layout="@layout/fragment_the_store_item_list" />
 
     </LinearLayout>

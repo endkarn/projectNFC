@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.karnjang.firebasedemo.fragments.TheStoreItemListFragment;
@@ -19,6 +21,10 @@ public class TheStoreActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         int storePosition = bundle.getInt("storePosition");
        // Log.i("Info", "Store Position = "+storePosition);
+//
+        //requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         setContentView(R.layout.activity_the_store);
 

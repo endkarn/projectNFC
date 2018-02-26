@@ -5,15 +5,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,7 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.karnjang.firebasedemo.ExchangeItemActivity;
 import com.karnjang.firebasedemo.R;
 import com.karnjang.firebasedemo.models.Item;
-import com.karnjang.firebasedemo.models.Store;
+import com.xw.repo.BubbleSeekBar;
 
 import java.util.ArrayList;
 
@@ -57,7 +63,7 @@ public class TheStoreItemListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View theitemlistview = inflater.inflate(R.layout.fragment_the_store_item_list, container, false);
-        final ListView listViewTheStoreItemList = (ListView) theitemlistview.findViewById(R.id.listViewItemList);
+        final GridView listViewTheStoreItemList = (GridView) theitemlistview.findViewById(R.id.listViewItemList);
         storeId = getActivity().getIntent().getExtras().getString("storeID");
         Log.i("######StoreListItem","get store id"+storeId);
 
@@ -74,6 +80,25 @@ public class TheStoreItemListFragment extends Fragment {
 
                 CustomItemListAdapter customItemListStore = new CustomItemListAdapter();
                 listViewTheStoreItemList.setAdapter(customItemListStore);
+
+
+
+
+
+//                listViewTheStoreItemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                        Intent intent = new Intent(getActivity(), ExchangeItemActivity.class);
+//
+//                        Log.i("Info Adapter","The Store Itemlist  " +storeId + " " +itemArrayList.get(i).getItemId() );
+//                        intent.putExtra("StoreID", storeId);
+//                        intent.putExtra("ItemID", itemArrayList.get(i).getItemId());
+//
+//                        startActivity(intent);
+//                        getActivity().finish();
+//                    }
+//                });
+
 
 
             }
@@ -119,7 +144,9 @@ public class TheStoreItemListFragment extends Fragment {
             imageItemView.setImageResource(IMAGES[item.getItemType()]);
             textItemName.setText(item.getItemName());
             textItemPrice.setText(""+item.getItemPrice());
+
             textItemAmount.setText("Amount:"+item.getItemAmount());
+
 
             if(item.getItemAmount() > 0){
                 button.setText("USE"+item.getItemPrice());
@@ -143,5 +170,6 @@ public class TheStoreItemListFragment extends Fragment {
             return theitemlistview;
         }
     }
+
 
 }

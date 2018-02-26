@@ -83,6 +83,7 @@ public class StoreFragment extends Fragment {
                 Log.i("info StoreFragment","Adding Store Done");
                 CustomAdapter customAdapter = new CustomAdapter();
                 listViewStore.setAdapter(customAdapter);
+
                 listViewStore.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

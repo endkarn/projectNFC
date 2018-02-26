@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.karnjang.firebasedemo.models.ActiveTask;
 import com.karnjang.firebasedemo.models.Store;
 import com.karnjang.firebasedemo.models.Task;
 import com.karnjang.firebasedemo.models.User;
+import com.xw.repo.BubbleSeekBar;
 
 import org.w3c.dom.Text;
 
@@ -58,7 +60,8 @@ public class TheStoreTaskFragment extends Fragment {
         // Inflate the layout for this fragment
         View thestoretaskview = inflater.inflate(R.layout.fragment_the_store_task, container, false);
         final TextView textTaskName = (TextView) thestoretaskview.findViewById(R.id.textTaskName) ;
-        final ProgressBar progressTaskBar = (ProgressBar) thestoretaskview.findViewById(R.id.progressTaskBar);
+        //final ProgressBar progressTaskBar = (ProgressBar) thestoretaskview.findViewById(R.id.progressTaskBar);
+        final BubbleSeekBar progresTaskBar = (BubbleSeekBar) thestoretaskview.findViewById(R.id.progressTaskBar);
         final TextView textProgressBar = (TextView) thestoretaskview.findViewById(R.id.textTaskProgressBar);
         final TextView textTaskTimeLeft = (TextView) thestoretaskview.findViewById(R.id.textTaskTimeLeft);
         final TextView textTaskRewards = (TextView) thestoretaskview.findViewById(R.id.textTaskRewards);
@@ -82,7 +85,6 @@ public class TheStoreTaskFragment extends Fragment {
                     textTaskRewards.setText("Rewards XP+" + oneStoreTask.getTaskExpReward() + "/ Point+" + oneStoreTask.getTaskPointReward());
                     final Integer taskProgress = oneStoreTask.getTaskConditionForCompleteTask();
 
-                    progressTaskBar.setMax(taskProgress);
 
                     dbUserRef.child(userName).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -128,7 +130,31 @@ public class TheStoreTaskFragment extends Fragment {
 
 
                             textProgressBar.setText("Take task complete "+ userProgress + "/" + taskProgress);
-                            progressTaskBar.setProgress(userProgress);
+                            //progressTaskBar.setProgress(userProgress);
+
+                            progresTaskBar.getConfigBuilder()
+                                    .min(0)
+                                    .max(taskProgress)
+                                    .progress(userProgress)
+                                    .sectionCount(taskProgress)
+                                    .trackColor(ContextCompat.getColor(getActivity(), R.color.color_gray))
+                                    .secondTrackColor(ContextCompat.getColor(getActivity(), R.color.color_blue))
+                                    .thumbColor(ContextCompat.getColor(getActivity(), R.color.color_blue))
+                                    .showSectionText()
+                                    .sectionTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary))
+                                    .sectionTextSize(18)
+                                    .showThumbText()
+                                    .thumbTextColor(ContextCompat.getColor(getActivity(), R.color.color_red))
+                                    .thumbTextSize(18)
+                                    .bubbleColor(ContextCompat.getColor(getActivity(), R.color.color_red))
+                                    .bubbleTextSize(18)
+                                    .showSectionMark()
+                                    .seekStepSection()
+                                    .touchToSeek()
+                                    .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
+                                    .build();
+
+                            progresTaskBar.setEnabled(false);
 
 //                            completeTask() Function below
 
