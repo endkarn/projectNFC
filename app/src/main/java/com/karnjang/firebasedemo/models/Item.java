@@ -1,9 +1,5 @@
 package com.karnjang.firebasedemo.models;
 
-/**
- * Created by ssppy on 19-Jan-18.
- */
-
 public class Item {
 
     private String itemId;

@@ -12,17 +12,19 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.karnjang.firebasedemo.R;
-import com.karnjang.firebasedemo.models.Action;
 import com.karnjang.firebasedemo.models.User;
+import com.karnjang.firebasedemo.models.UserAct;
 
 import java.security.PrivateKey;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,21 +35,22 @@ public class MoreFragment extends Fragment {
     DatabaseReference dbUserRef = dbref.child("users");
 
     User myDefUser = new User();
-    ArrayList<Action> listAction = new ArrayList<>();
-    Action newAction = new Action("sad123ds","+100exp +100pt",
-            "SC007","QUEST COMPLETE","today");
+    ArrayList<UserAct> actionArrayList = new ArrayList<>();
+    ArrayList<String> getKeyArrayList = new ArrayList<>();
+
+    UserAct testAction1 = new UserAct();
 
     TextView textUserLevel,textUsername,textUserTotalPoint,textUserExp,textUserLevelCard;
 
 
     public MoreFragment() {
         // Required empty public constructor
-
-        listAction.add(newAction);
-        listAction.add(newAction);
-        listAction.add(newAction);
-        listAction.add(newAction);
-
+        testAction1.setActionResult(" ");
+        testAction1.setActionStore(" ");
+        testAction1.setActionDetail(" ");
+        testAction1.setActionTimeStamp(" ");
+        getKeyArrayList.add("akjhfdhgkaskdjh");
+        actionArrayList.add(testAction1);
 
     }
 
@@ -57,7 +60,7 @@ public class MoreFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View moreFragment = inflater.inflate(R.layout.fragment_more, container, false);
-        ListView listAction = (ListView) moreFragment.findViewById(R.id.listViewAction);
+        final ListView listAction =  moreFragment.findViewById(R.id.listViewAction);
 
         textUserLevel = moreFragment.findViewById(R.id.textUserLevel);
         textUsername = moreFragment.findViewById(R.id.textUsername);
@@ -85,6 +88,31 @@ public class MoreFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) { }
         });
 
+        dbUserRef.child(username).child("ACTIONS").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot actionSnapshot : dataSnapshot.getChildren()){
+                    UserAct userAction = actionSnapshot.getValue(UserAct.class);
+                    actionArrayList.add(userAction);
+                    Log.i("MORE INFO","useraction "+userAction);
+
+
+
+
+                    Log.i("MORE INFO","KEYYYYYYYYY "+actionSnapshot.getKey());
+//                    Log.i("MORE INFO","actionSnapshot getvalue "+actionSnapshot.getValue());
+                    getKeyArrayList.add(actionSnapshot.getKey());
+                }
+                Log.i("MORE INFO","size actionlists"+actionArrayList.size());
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
 
 
@@ -101,12 +129,12 @@ public class MoreFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return listAction.size();
+            return actionArrayList.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return listAction.get(i);
+            return actionArrayList.get(i);
         }
 
         @Override
@@ -123,12 +151,13 @@ public class MoreFragment extends Fragment {
             TextView textActionDetail = actionlistview.findViewById(R.id.textActionDetail);
             TextView textActionTimeStamp = actionlistview.findViewById(R.id.textActionTimeStamp);
 
-            Action action = listAction.get(i);
-            textActionId.setText(action.getActionId());
-            textActionResult.setText(action.getActionResult());
-            textActionStore.setText(action.getActionStore());
-            textActionDetail.setText(action.getActionDetail());
-            textActionTimeStamp.setText(action.getActionTimeStamp());
+            UserAct aUserAct = (UserAct) getItem(i);
+
+            textActionId.setText(getKeyArrayList.get(i));
+            textActionResult.setText(aUserAct.getActionResult());
+            textActionStore.setText(aUserAct.getActionStore());
+            textActionDetail.setText(aUserAct.getActionDetail());
+            textActionTimeStamp.setText(aUserAct.getActionTimeStamp());
 
 
 

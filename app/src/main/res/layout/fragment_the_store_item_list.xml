@@ -22,13 +22,14 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textView9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto"
                 android:text="THIS IS ITEM LISTs"
                 android:textSize="18sp"
                 android:textStyle="bold|italic" />
@@ -36,7 +37,7 @@
             <GridView
                 android:id="@+id/listViewItemList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:columnWidth="120dp"
                 android:gravity="center"
                 android:horizontalSpacing="4dp"

@@ -19,17 +19,24 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.karnjang.firebasedemo.models.Item;
 import com.karnjang.firebasedemo.models.User;
+import com.karnjang.firebasedemo.models.UserAct;
+
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 
 public class ExchangeItemActivity extends AppCompatActivity {
@@ -74,8 +81,12 @@ public class ExchangeItemActivity extends AppCompatActivity {
         final TextView textItemName = findViewById(R.id.textItemName);
         final TextView textItemPrice = findViewById(R.id.textItemPrice);
         final TextView textItemStore = findViewById(R.id.textItemStore);
-        final Button buttonTimeOut = findViewById(R.id.buttonTimeOut);
         final ImageView imItem = findViewById(R.id.imageItem);
+        final ProgressBar barTimeout = findViewById(R.id.barTimeOut);
+        final TextView alterUser = findViewById(R.id.alterText);
+        final Button cancleButton = findViewById(R.id.butCancle);
+
+
 
         dbStoreRef.child(storeId).child("ITEMS").child(ItemId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -84,9 +95,9 @@ public class ExchangeItemActivity extends AppCompatActivity {
 
                 Log.i("Ex Info", String.valueOf(dataSnapshot));
 
-                textItemName.setText("Item : "+itemEx.getItemName());
-                textItemPrice.setText("Price : "+itemEx.getItemPrice());
-                textItemStore.setText("Ref Store : "+storeId);
+                textItemName.setText(""+itemEx.getItemName());
+                textItemPrice.setText(""+itemEx.getItemPrice());
+                textItemStore.setText(""+storeId);
                 imItem.setImageResource(IMAGES[itemEx.getItemType()]);
             }
 
@@ -97,6 +108,12 @@ public class ExchangeItemActivity extends AppCompatActivity {
         });
 
 
+        cancleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
 
 
@@ -123,21 +140,22 @@ public class ExchangeItemActivity extends AppCompatActivity {
         nfcTechLists = new String[][] { new String[] { NfcF.class.getName() } };
 
 
-
-
-        new CountDownTimer(60000,1000) {
+        CountDownTimer countDownTimer = new CountDownTimer(90000,100) {
 
             public void onTick(long millisUntilFinished) {
-                buttonTimeOut.setText(Long.toString(millisUntilFinished/1000));
+                Integer exactlyNumber = (int)(long) millisUntilFinished;
+                barTimeout.setMax(90000);
+                barTimeout.setProgress(exactlyNumber);
             }
 
             public void onFinish() {
-                buttonTimeOut.setText("Time Out!");
-                finish();
+               // finish();
+                alterUser.setText("Exchange Failed! Please Try Again");
+                nfcPendingIntent.cancel();
+
 
             }
         }.start();
-
 
 
 
@@ -183,6 +201,7 @@ public class ExchangeItemActivity extends AppCompatActivity {
         // set the textview to the NFC text data
 //        textNfc.setText(s);
         textNfc.setText(textString);
+        EditText testText = findViewById(R.id.testText);
 
         if(waitingTag.equals(textString)){
             final Dialog dialog = new Dialog(ExchangeItemActivity.this);
@@ -216,7 +235,6 @@ public class ExchangeItemActivity extends AppCompatActivity {
                     User user = userSnapshot.getValue(User.class);
                     Long longUserProgress = (Long) userSnapshot.child("ACTIVETASK").child(storeId).child("currentCondition").getValue();
                     int userProgress = longUserProgress.intValue();
-
                     dbUserRef.child(userName).child("totalPoints").setValue(user.getTotalPoints() - itemEx.getItemPrice());
                     dbUserRef.child(userName).child("ACTIVETASK").child(storeId).child("currentCondition").setValue(userProgress+1);
                     dbStoreRef.child(storeId).child("ITEMS").child(itemEx.getItemId()).child("itemAmount").setValue(itemEx.getItemAmount()-1);
@@ -227,7 +245,34 @@ public class ExchangeItemActivity extends AppCompatActivity {
                 }
             });
 
+            SimpleDateFormat stampTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String formated = stampTime.format(new Date());
+
+            UserAct action1 = new UserAct();
+            action1.setActionResult("-"+itemEx.getItemPrice()+"points");
+            action1.setActionStore(storeId);
+            action1.setActionDetail("EXCHANGE ITEM "+itemEx.getItemName());
+            action1.setActionTimeStamp(formated);
+
+
+            dbUserRef.child(userName).child("ACTIONS").push().setValue(action1, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if (databaseError == null) {
+
+                        Log.i("Info", "Save successful");
+
+                    } else {
+
+                        Log.i("Info", "Save failed");
+
+                    }
+                }
+            });
+
+
             dialog.show();
+
 
 
         }else{

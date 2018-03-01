@@ -158,7 +158,7 @@ public class TheStoreItemListFragment extends Fragment {
                         itemIntent.putExtra("ItemID", item.getItemId());
 
                         startActivity(itemIntent);
-                        getActivity().finish();
+
                     }
                 });
             }else {
