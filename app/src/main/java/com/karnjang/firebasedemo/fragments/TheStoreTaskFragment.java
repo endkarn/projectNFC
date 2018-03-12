@@ -80,7 +80,7 @@ public class TheStoreTaskFragment extends Fragment {
                 if (taskSnapshot.exists()) {
                     Log.i("TheStoreTask INFO","Check DATA taskSnapshot "+taskSnapshot.getValue());
 
-                    Task oneStoreTask = taskSnapshot.getValue(Task.class);
+                    final Task oneStoreTask = taskSnapshot.getValue(Task.class);
                     textTaskName.setText(oneStoreTask.getTaskName());
                     textTaskRewards.setText("Rewards XP+" + oneStoreTask.getTaskExpReward() + "/ Point+" + oneStoreTask.getTaskPointReward());
                     final Integer taskProgress = oneStoreTask.getTaskConditionForCompleteTask();
@@ -129,7 +129,7 @@ public class TheStoreTaskFragment extends Fragment {
                             }
 
 
-                            textProgressBar.setText("Take task complete "+ userProgress + "/" + taskProgress);
+                            textProgressBar.setText(oneStoreTask.getTaskDetail()+" "+ userProgress + "/" + taskProgress);
                             //progressTaskBar.setProgress(userProgress);
 
                             progresTaskBar.getConfigBuilder()

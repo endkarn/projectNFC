@@ -70,14 +70,14 @@ public class User {
     }
 
     public String getUserLevel(){
-        Double userLevelD = ( 0.18 * Math.sqrt(totalXp));
+        Double userLevelD = ( 0.4 * Math.sqrt(totalXp));
         Integer userLevelI = userLevelD.intValue();
         String userLevel = Integer.toString(userLevelI);
         return userLevel;
     }
 
     public String getUserLevelPersen(){
-        Double userLevelD = ( 0.18 * Math.sqrt(totalXp));
+        Double userLevelD = ( 0.4 * Math.sqrt(totalXp));
         String userLevelPer = String.valueOf(userLevelD);
         userLevelPer = userLevelPer.substring(userLevelPer.indexOf("."),userLevelPer.indexOf(".")+3);
         return userLevelPer+"%";

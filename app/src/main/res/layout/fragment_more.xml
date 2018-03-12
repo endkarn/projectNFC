@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
     tools:context=".fragments.MoreFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -198,7 +199,7 @@
                     android:id="@+id/listViewAction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:footerDividersEnabled="true"
+                    android:dividerHeight="-5dp"
                     android:scrollbars="none" />
             </LinearLayout>
 

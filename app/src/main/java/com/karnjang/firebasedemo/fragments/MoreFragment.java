@@ -45,9 +45,9 @@ public class MoreFragment extends Fragment {
 
     public MoreFragment() {
         // Required empty public constructor
-        testAction1.setActionResult(" ");
-        testAction1.setActionStore(" ");
-        testAction1.setActionDetail(" ");
+        testAction1.setActionResult("+100XP");
+        testAction1.setActionStore("SC09");
+        testAction1.setActionDetail("Complete Task");
         testAction1.setActionTimeStamp(" ");
         getKeyArrayList.add("akjhfdhgkaskdjh");
         actionArrayList.add(testAction1);
@@ -151,9 +151,9 @@ public class MoreFragment extends Fragment {
             TextView textActionDetail = actionlistview.findViewById(R.id.textActionDetail);
             TextView textActionTimeStamp = actionlistview.findViewById(R.id.textActionTimeStamp);
 
-            UserAct aUserAct = (UserAct) getItem(i);
+            UserAct aUserAct = (UserAct) getItem(getCount() - 1 - i);
 
-            textActionId.setText(getKeyArrayList.get(i));
+            textActionId.setText(getKeyArrayList.get(getCount() - 1 - i));
             textActionResult.setText(aUserAct.getActionResult());
             textActionStore.setText(aUserAct.getActionStore());
             textActionDetail.setText(aUserAct.getActionDetail());

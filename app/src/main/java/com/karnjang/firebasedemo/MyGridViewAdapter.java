@@ -3,14 +3,13 @@ package com.karnjang.firebasedemo;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.widget.ListView;
+import android.widget.GridView;
 
-public class MyListViewAdapter extends ListView {
-
+public class MyGridViewAdapter extends GridView{
     private android.view.ViewGroup.LayoutParams params;
     private int oldCount = 0;
 
-    public MyListViewAdapter(Context context, AttributeSet attrs)
+    public MyGridViewAdapter(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
@@ -23,7 +22,7 @@ public class MyListViewAdapter extends ListView {
             int height = getChildAt(0).getHeight() + 1 ;
             oldCount = getCount();
             params = getLayoutParams();
-            params.height = getCount() * (height + getDividerHeight());
+            params.height = ((getCount() * height)/2);
             setLayoutParams(params);
         }
 

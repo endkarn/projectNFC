@@ -4,6 +4,7 @@ package com.karnjang.firebasedemo.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -103,13 +105,28 @@ public class RankingFragment extends Fragment {
             ranklistview = getLayoutInflater().inflate(R.layout.custom_rank_listview, null);
             TextView textRankName = (TextView) ranklistview.findViewById(R.id.rankTextName);
             TextView textRankLevel = (TextView) ranklistview.findViewById(R.id.rankTextLevel);
+            TextView textRankCount = (TextView) ranklistview.findViewById(R.id.textRankCount);
+            ImageView imageRank = (ImageView) ranklistview.findViewById(R.id.imageRank);
+
+            textRankCount.setText(""+(i+1));
+
+            if(i == 0){
+                imageRank.setImageResource(R.drawable.gold_thophy);
+            }else if (i == 1){
+                imageRank.setImageResource(R.drawable.sliver_thophy);
+            }else if (i == 2){
+                imageRank.setImageResource(R.drawable.bronze_thophy);
+            }else {
+                imageRank.setVisibility(View.INVISIBLE);
+            }
+
             //Sorting by DESC
             User theUser = userArrayList.get(getCount() - 1 - i);
             textRankName.setText(theUser.getUsername());
-            if(theUser.getUsername().equals(spUsername)){
-                textRankName.setTextColor(Color.GREEN);
-                textRankLevel.setTextColor(Color.GREEN);
-            }
+//            if(theUser.getUsername().equals(spUsername)){
+//                textRankName.setTextColor(Color.GREEN);
+//                textRankLevel.setTextColor(Color.GREEN);
+//            }
             textRankLevel.setText(theUser.getUserLevel());
             return ranklistview;
         }

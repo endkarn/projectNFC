@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ import com.karnjang.firebasedemo.TheStoreActivity;
 import com.karnjang.firebasedemo.models.ActiveTask;
 import com.karnjang.firebasedemo.models.Store;
 import com.karnjang.firebasedemo.models.Task;
+import com.xw.repo.BubbleSeekBar;
 
 import org.w3c.dom.Text;
 
@@ -118,6 +120,9 @@ public class TaskFragment extends Fragment {
             });
 
 
+
+
+
         return taskview;
     }
 
@@ -148,9 +153,9 @@ public class TaskFragment extends Fragment {
 
                 TextView textStoreInfo = tasklistview.findViewById(R.id.textStoreInfo);
                 TextView textTaskName = tasklistview.findViewById(R.id.textTaskName);
-                TextView textTaskDesc = tasklistview.findViewById(R.id.textTaskDesc);
+                TextView textTaskDesc = tasklistview.findViewById(R.id.textTaskProgressBar);
                 final TextView textTaskTimeLeft = tasklistview.findViewById(R.id.textTaskTimeLeft);
-                ProgressBar progressTaskBar = tasklistview.findViewById(R.id.progressTaskBar);
+                BubbleSeekBar progressTaskBar = tasklistview.findViewById(R.id.progressTaskBar);
                 TextView textTaskReward = tasklistview.findViewById(R.id.textTaskReward);
                 TextView textTaskStatus = tasklistview.findViewById(R.id.textTaskStatus);
 
@@ -159,8 +164,8 @@ public class TaskFragment extends Fragment {
                     textTaskName.setText(theStore.getTASK().getTaskName());
                     textTaskDesc.setText(theStore.getTASK().getTaskDetail() + ": "+theActiveTask.getCurrentCondition()+ "/" + theStore.getTASK().getTaskConditionForCompleteTask());
                     textTaskReward.setText("+"+theStore.getTASK().getTaskExpReward()+"XP  / +"+theStore.getTASK().getTaskPointReward()+"PT");
-                    progressTaskBar.setMax(theStore.getTASK().getTaskConditionForCompleteTask());
-                    progressTaskBar.setProgress(theActiveTask.getCurrentCondition());
+//                    progressTaskBar.setMax(theStore.getTASK().getTaskConditionForCompleteTask());
+//                    progressTaskBar.setProgress(theActiveTask.getCurrentCondition());
                     if(theActiveTask.getTaskStatus() == 0){
                         textTaskStatus.setText("TASK ACTIVE");
                         textTaskStatus.setTextColor(Color.GREEN);
@@ -171,6 +176,30 @@ public class TaskFragment extends Fragment {
                         textTaskStatus.setText("TASK STATUS ERROR");
                         textTaskStatus.setTextColor(Color.RED);
                     }
+
+                    progressTaskBar.getConfigBuilder()
+                            .min(0)
+                            .max(theStore.getTASK().getTaskConditionForCompleteTask())
+                            .progress(theActiveTask.getCurrentCondition())
+                            .sectionCount(theStore.getTASK().getTaskConditionForCompleteTask())
+                            .trackColor(ContextCompat.getColor(getActivity(), R.color.color_gray))
+                            .secondTrackColor(ContextCompat.getColor(getActivity(), R.color.color_blue))
+                            .thumbColor(ContextCompat.getColor(getActivity(), R.color.color_blue))
+                            .showSectionText()
+                            .sectionTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary))
+                            .sectionTextSize(18)
+                            .showThumbText()
+                            .thumbTextColor(ContextCompat.getColor(getActivity(), R.color.color_red))
+                            .thumbTextSize(18)
+                            .bubbleColor(ContextCompat.getColor(getActivity(), R.color.color_red))
+                            .bubbleTextSize(18)
+                            .showSectionMark()
+                            .seekStepSection()
+                            .touchToSeek()
+                            .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
+                            .build();
+
+                    progressTaskBar.setEnabled(false);
                 }
 
                 Calendar targetTime = Calendar.getInstance();

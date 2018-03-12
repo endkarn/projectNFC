@@ -201,7 +201,6 @@ public class ExchangeItemActivity extends AppCompatActivity {
         // set the textview to the NFC text data
 //        textNfc.setText(s);
         textNfc.setText(textString);
-        EditText testText = findViewById(R.id.testText);
 
         if(waitingTag.equals(textString)){
             final Dialog dialog = new Dialog(ExchangeItemActivity.this);
@@ -272,6 +271,7 @@ public class ExchangeItemActivity extends AppCompatActivity {
 
 
             dialog.show();
+            nfcPendingIntent.cancel();
 
 
 

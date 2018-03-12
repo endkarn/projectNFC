@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.karnjang.firebasedemo.fragments.TheStoreItemListFragment;
@@ -21,6 +23,8 @@ public class TheStoreActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         int storePosition = bundle.getInt("storePosition");
        // Log.i("Info", "Store Position = "+storePosition);
+
+        ImageView backImagetoGetBack = findViewById(R.id.backImagetoGetBack);
 //
         //requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
@@ -28,7 +32,9 @@ public class TheStoreActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_the_store);
 
-       // textTheStore = (TextView) findViewById(R.id.textTheStoreName);
+
+
+        // textTheStore = (TextView) findViewById(R.id.textTheStoreName);
        // textTheStore.setText("Store Position is " +storePosition);
 
 //        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -37,5 +43,9 @@ public class TheStoreActivity extends AppCompatActivity {
        // transaction.replace(R.id.fragment4, theStoreItemListFragment);
        // transaction.commit();
 
+    }
+
+    public void clickEvent(View view){
+        finish();
     }
 }
