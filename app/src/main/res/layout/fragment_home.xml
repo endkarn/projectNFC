@@ -18,35 +18,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_thin"
-            android:text="FirstPage_TBD"
-            android:textAlignment="center"
+            android:text="Feeds"
+            android:textAlignment="textStart"
             android:textSize="36sp" />
 
-        <ss.com.bannerslider.views.BannerSlider
-            android:id="@+id/banner_slider_home"
+        <ListView
+            android:id="@+id/listViewFeed"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitCenter"
-            android:visibility="invisible"
-            app:defaultIndicators="circle"
-            app:interval="5000"
-            app:loopSlides="true">
-
-        </ss.com.bannerslider.views.BannerSlider>
-
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="fitCenter">
-
-        </android.support.constraint.ConstraintLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-        </LinearLayout>
+            android:dividerHeight="-10dp" />
 
     </LinearLayout>
 

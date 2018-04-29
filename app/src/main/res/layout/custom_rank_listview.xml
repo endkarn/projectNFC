@@ -38,14 +38,14 @@
                 android:id="@+id/textRankCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginBottom="15dp"
                 android:layout_weight="0"
                 android:fontFamily="@font/roboto_condensed_bold"
                 android:text="99"
                 android:textAlignment="center"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageRank"
                 app:layout_constraintTop_toTopOf="parent"
@@ -64,7 +64,7 @@
                 app:layout_constraintStart_toEndOf="@+id/textRankCount"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imageRankProflie"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
@@ -80,8 +80,7 @@
                     android:paddingStart="10dp"
                     android:text="TextView"
                     android:textAlignment="center"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
+                    android:textSize="14sp"
                     app:layout_constraintStart_toEndOf="@+id/textRankCount"
                     tools:layout_editor_absoluteY="4dp" />
 
@@ -104,7 +103,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Level"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/rankTextLevel"
@@ -113,7 +113,7 @@
                     android:fontFamily="@font/roboto_thin"
                     android:text="35"
                     android:textAlignment="center"
-                    android:textSize="18sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

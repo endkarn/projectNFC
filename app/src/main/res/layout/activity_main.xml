@@ -44,27 +44,13 @@
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/coolpong_box" />
 
-        <EditText
-            android:id="@+id/userName"
-            android:layout_width="match_parent"
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Username"
-            android:inputType="textPersonName"
-            android:textAlignment="center"
-            tools:layout_editor_absoluteX="85dp"
-            tools:layout_editor_absoluteY="2159dp" />
-
-        <EditText
-            android:id="@+id/userPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:textAlignment="center"
-            tools:layout_editor_absoluteX="85dp"
-            tools:layout_editor_absoluteY="2212dp" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp" />
 
         <Button
             android:id="@+id/button2"

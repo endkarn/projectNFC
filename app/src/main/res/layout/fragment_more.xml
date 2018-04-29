@@ -29,10 +29,11 @@
                     android:layout_height="130dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/indicator_circle_selected" />
+                    android:src="@drawable/indicator_circle_selected"
+                    android:visibility="visible" />
 
-                <ImageView
-                    android:id="@+id/imageView7"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imageProfileImage"
                     android:layout_width="130dp"
                     android:layout_height="130dp"
                     android:layout_alignParentTop="true"

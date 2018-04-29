@@ -12,6 +12,9 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        customDebugType {
+            debuggable true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -42,6 +45,10 @@ dependencies {
     implementation 'com.android.support:gridlayout-v7:26.1.0'
     implementation 'com.xw.repo:bubbleseekbar:3.14'
     implementation 'com.android.support:recyclerview-v7:25.0.0'
+    implementation 'com.facebook.android:facebook-login:[4,5)'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+
 }
 
 

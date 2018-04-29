@@ -10,8 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,6 +20,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.karnjang.firebasedemo.R;
 import com.karnjang.firebasedemo.models.User;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 /**
@@ -43,6 +46,7 @@ public class UserInfoFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_user_info, container, false);
         final TextView textInfoUsername = (TextView) view.findViewById(R.id.textInfoUsername);
         final TextView textInfoLevel = (TextView) view.findViewById(R.id.textInfoLevel);
+        final CircleImageView imageSmallUserPic = (CircleImageView) view.findViewById(R.id.imageSmallUserPic);
         SharedPreferences userPref = this.getActivity().getSharedPreferences("userInfo",Context.MODE_PRIVATE);
         final String userName = userPref.getString("SH_USERNAME","");
         Log.i("Info", "USERNAME FROM Fragment UserInfo = "+userName);
@@ -57,7 +61,7 @@ public class UserInfoFragment extends Fragment {
                         textInfoUsername.setText(user.getUsername());
                         textInfoLevel.setText("Level "+user.getUserLevel());
 
-
+                        Picasso.with(getContext()).load(user.getPictureProfile()).fit().into(imageSmallUserPic);
 
 
 

@@ -25,6 +25,7 @@ import com.karnjang.firebasedemo.R;
 import com.karnjang.firebasedemo.models.ActiveTask;
 import com.karnjang.firebasedemo.models.Store;
 import com.karnjang.firebasedemo.models.Task;
+import com.karnjang.firebasedemo.models.TaskFeed;
 import com.karnjang.firebasedemo.models.User;
 import com.xw.repo.BubbleSeekBar;
 
@@ -44,6 +45,7 @@ public class TheStoreTaskFragment extends Fragment {
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
     DatabaseReference dbStoreRef = dbref.child("STORE");
     DatabaseReference dbUserRef = dbref.child("users");
+    DatabaseReference dbFeedRef = dbref.child("FEEDS");
     Long longUserProgress;
     Long longTaskStatus;
 
@@ -58,7 +60,7 @@ public class TheStoreTaskFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View thestoretaskview = inflater.inflate(R.layout.fragment_the_store_task, container, false);
+        final View thestoretaskview = inflater.inflate(R.layout.fragment_the_store_task, container, false);
         final TextView textTaskName = (TextView) thestoretaskview.findViewById(R.id.textTaskName) ;
         //final ProgressBar progressTaskBar = (ProgressBar) thestoretaskview.findViewById(R.id.progressTaskBar);
         final BubbleSeekBar progresTaskBar = (BubbleSeekBar) thestoretaskview.findViewById(R.id.progressTaskBar);
@@ -86,77 +88,124 @@ public class TheStoreTaskFragment extends Fragment {
                     final Integer taskProgress = oneStoreTask.getTaskConditionForCompleteTask();
 
 
-                    dbUserRef.child(userName).addListenerForSingleValueEvent(new ValueEventListener() {
+                    dbUserRef.child(userName).child("ACTIVETASK").child(storeId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot userSnapshot) {
 
-                            longUserProgress = (Long) userSnapshot.child("ACTIVETASK").child(storeId).child("currentCondition").getValue();
-                            longTaskStatus = (Long) userSnapshot.child("ACTIVETASK").child(storeId).child("taskStatus").getValue();
-                            int userProgress = longUserProgress.intValue();
-                            int intTaskStatus = longTaskStatus.intValue();
+                            if(!userSnapshot.exists()){
+                                ActiveTask newActiveTask = new ActiveTask();
+                                newActiveTask.setCurrentCondition(0);
+                                newActiveTask.setTaskStatus(0);
+                                newActiveTask.setStoreId(storeId);
 
-                            if(intTaskStatus == 0){
+                                dbUserRef.child(userName).child("ACTIVETASK").child(storeId).setValue(newActiveTask);
+                                Log.i("ACTIVE TASK","!userSnapshot.exists()");
+
                                 textTaskStatus.setText("TASK ACTIVE");
                                 textTaskStatus.setTextColor(Color.GREEN);
-                            }else if (intTaskStatus == 1) {
-                                textTaskStatus.setText("TASK DONE");
-                                textTaskStatus.setTextColor(Color.RED);
-                            }else {
-                                textTaskStatus.setText("TASK STATUS ERROR");
-                                textTaskStatus.setTextColor(Color.RED);
-                            }
+                                textProgressBar.setText(oneStoreTask.getTaskDetail()+" "+ 0 + "/" + taskProgress);
+                                progresTaskBar.getConfigBuilder()
+                                        .min(0)
+                                        .max(taskProgress)
+                                        .progress(0)
+                                        .sectionCount(taskProgress)
+                                        .trackColor(ContextCompat.getColor(getActivity(), R.color.color_gray))
+                                        .secondTrackColor(ContextCompat.getColor(getActivity(), R.color.color_blue))
+                                        .thumbColor(ContextCompat.getColor(getActivity(), R.color.color_blue))
+                                        .showSectionText()
+                                        .sectionTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary))
+                                        .sectionTextSize(18)
+                                        .showThumbText()
+                                        .thumbTextColor(ContextCompat.getColor(getActivity(), R.color.color_red))
+                                        .thumbTextSize(18)
+                                        .bubbleColor(ContextCompat.getColor(getActivity(), R.color.color_red))
+                                        .bubbleTextSize(18)
+                                        .showSectionMark()
+                                        .seekStepSection()
+                                        .touchToSeek()
+                                        .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
+                                        .build();
+                                progresTaskBar.setEnabled(false);
 
-                            if (userProgress == taskProgress && intTaskStatus == 0){
-                                User user = userSnapshot.getValue(User.class);
-                                Task task = taskSnapshot.getValue(Task.class);
-                                ActiveTask userTask = userSnapshot.child("ACTIVETASK").child(storeId).getValue(ActiveTask.class);
 
 
+                            } else {
+                                longUserProgress = (Long) userSnapshot.child("currentCondition").getValue();
+                                longTaskStatus = (Long) userSnapshot.child("taskStatus").getValue();
+                                int userProgress = longUserProgress.intValue();
+                                int intTaskStatus = longTaskStatus.intValue();
 
-                                userTask.setTaskStatus(1);
-                                userTask.setStoreId(storeId);
-                                dbUserRef.child(userName).child("totalPoints").setValue(user.getTotalPoints()+task.getTaskPointReward());
-                                dbUserRef.child(userName).child("totalXp").setValue(user.getTotalXp()+task.getTaskExpReward());
-                                dbUserRef.child(userName).child("ACTIVETASK").child(storeId).setValue(userTask);
-
+                                if(intTaskStatus == 0){
+                                    textTaskStatus.setText("TASK ACTIVE");
+                                    textTaskStatus.setTextColor(Color.GREEN);
+                                }else if (intTaskStatus == 1) {
+                                    textTaskStatus.setText("TASK DONE");
+                                    textTaskStatus.setTextColor(Color.RED);
+                                }else {
+                                    textTaskStatus.setText("TASK STATUS ERROR");
+                                    textTaskStatus.setTextColor(Color.RED);
+                                }
+                                if (userProgress == taskProgress && intTaskStatus == 0){
+                                    User user = userSnapshot.getValue(User.class);
+                                    Task task = taskSnapshot.getValue(Task.class);
+                                    ActiveTask userTask = userSnapshot.child("ACTIVETASK").child(storeId).getValue(ActiveTask.class);
+                                    userTask.setTaskStatus(1);
+                                    userTask.setStoreId(storeId);
+                                    dbUserRef.child(userName).child("totalPoints").setValue(user.getTotalPoints()+task.getTaskPointReward());
+                                    dbUserRef.child(userName).child("totalXp").setValue(user.getTotalXp()+task.getTaskExpReward());
+                                    dbUserRef.child(userName).child("ACTIVETASK").child(storeId).setValue(userTask);
 //                                Map<String,Object> taskMap = new HashMap<String,Object>();
 //                                taskMap.put("currentCondition",0);
 //                                dbUserRef.child(userName).child("ACTIVETASK").child(storeId).child("currentCondition").updateChildren(taskMap);
-
-                                Log.i("StoreTask","Task is DONE and get Rewards");
+                                    Log.i("StoreTask","Task is DONE and get Rewards");
 //                                SystemClock.sleep(5000);
 //                                getActivity().finish();
+                                    SimpleDateFormat stampTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    String formated = stampTime.format(new Date());
+                                    TaskFeed taskFeed = new TaskFeed();
+                                    taskFeed.setFeedTimeStamp(formated);
+                                    taskFeed.setFeedUsername(userName);
+                                    taskFeed.setFeedStore(storeId);
+                                    taskFeed.setFeedDetail("Completed the task get rewards +"+oneStoreTask.getTaskExpReward()+"XP,+"+oneStoreTask.getTaskPointReward()+"PT");
+                                    dbFeedRef.push().setValue(taskFeed, new DatabaseReference.CompletionListener() {
+                                        @Override
+                                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                            if (databaseError == null) {
+                                                Log.i("Info", "Save successful");
+                                            } else {
+                                                Log.i("Info", "Save failed");
+                                            }
+                                        }
+                                    });
+                                }
+                                textProgressBar.setText(oneStoreTask.getTaskDetail()+" "+ userProgress + "/" + taskProgress);
+                                //progressTaskBar.setProgress(userProgress);
+                                progresTaskBar.getConfigBuilder()
+                                        .min(0)
+                                        .max(taskProgress)
+                                        .progress(userProgress)
+                                        .sectionCount(taskProgress)
+                                        .trackColor(ContextCompat.getColor(getActivity(), R.color.color_gray))
+                                        .secondTrackColor(ContextCompat.getColor(getActivity(), R.color.color_blue))
+                                        .thumbColor(ContextCompat.getColor(getActivity(), R.color.color_blue))
+                                        .showSectionText()
+                                        .sectionTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary))
+                                        .sectionTextSize(18)
+                                        .showThumbText()
+                                        .thumbTextColor(ContextCompat.getColor(getActivity(), R.color.color_red))
+                                        .thumbTextSize(18)
+                                        .bubbleColor(ContextCompat.getColor(getActivity(), R.color.color_red))
+                                        .bubbleTextSize(18)
+                                        .showSectionMark()
+                                        .seekStepSection()
+                                        .touchToSeek()
+                                        .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
+                                        .build();
+                                progresTaskBar.setEnabled(false);
+//                            completeTask() Function below
                             }
 
 
-                            textProgressBar.setText(oneStoreTask.getTaskDetail()+" "+ userProgress + "/" + taskProgress);
-                            //progressTaskBar.setProgress(userProgress);
-
-                            progresTaskBar.getConfigBuilder()
-                                    .min(0)
-                                    .max(taskProgress)
-                                    .progress(userProgress)
-                                    .sectionCount(taskProgress)
-                                    .trackColor(ContextCompat.getColor(getActivity(), R.color.color_gray))
-                                    .secondTrackColor(ContextCompat.getColor(getActivity(), R.color.color_blue))
-                                    .thumbColor(ContextCompat.getColor(getActivity(), R.color.color_blue))
-                                    .showSectionText()
-                                    .sectionTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary))
-                                    .sectionTextSize(18)
-                                    .showThumbText()
-                                    .thumbTextColor(ContextCompat.getColor(getActivity(), R.color.color_red))
-                                    .thumbTextSize(18)
-                                    .bubbleColor(ContextCompat.getColor(getActivity(), R.color.color_red))
-                                    .bubbleTextSize(18)
-                                    .showSectionMark()
-                                    .seekStepSection()
-                                    .touchToSeek()
-                                    .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
-                                    .build();
-
-                            progresTaskBar.setEnabled(false);
-
-//                            completeTask() Function below
 
 
 

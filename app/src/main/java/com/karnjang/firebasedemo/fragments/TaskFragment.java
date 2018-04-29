@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +31,6 @@ import com.karnjang.firebasedemo.models.Store;
 import com.karnjang.firebasedemo.models.Task;
 import com.xw.repo.BubbleSeekBar;
 
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -52,6 +50,8 @@ public class TaskFragment extends Fragment {
     ArrayList<Store> storeLists = new ArrayList<>();
     ArrayList<ActiveTask> activeTaskLists = new ArrayList<>();
 
+    CustomTaskAdapter customTaskAdapter = new CustomTaskAdapter();
+
     public TaskFragment() {
         // Required empty public constructor
     }
@@ -62,12 +62,15 @@ public class TaskFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View taskview = inflater.inflate(R.layout.fragment_task, container, false);
         final ListView listViewTask = (ListView) taskview.findViewById(R.id.listViewTask);
+        final TextView headActiveTask = (TextView) taskview.findViewById(R.id.textView16);
+        final TextView textSubCountdown = (TextView) taskview.findViewById(R.id.textView22);
+        final TextView textTaskCountdown = (TextView) taskview.findViewById(R.id.textTaskCountdown);
 
         SharedPreferences userPref = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        userName = userPref.getString("SH_USERNAME","");
-
-        Log.i("info TaskFragment","Start Listener");
-        dbStoreRef.addValueEventListener(new ValueEventListener() {
+        userName = userPref.getString("SH_USERNAME", "");
+        //userName = "KARNAWAT";
+        Log.i("info TaskFragment", "Start Listener");
+        dbStoreRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot storeSnapshot : dataSnapshot.getChildren()) {
@@ -75,9 +78,9 @@ public class TaskFragment extends Fragment {
                     Log.i("info TaskFragment", "data snapshot value " + storeSnapshot.getValue());
                     Store oneStore = new Store();
                     String storeId = (String) storeSnapshot.child("storeID").getValue();
-                    String storeName = (String)  storeSnapshot.child("storeName").getValue();
+                    String storeName = (String) storeSnapshot.child("storeName").getValue();
                     Task taskStore = storeSnapshot.child("TASK").getValue(Task.class);
-                    Log.i("info TaskFragment", "data snapshot value " + taskStore   );
+                    Log.i("info TaskFragment", "data snapshot value " + taskStore);
                     oneStore.setStoreID(storeId);
                     oneStore.setStoreName(storeName);
                     oneStore.setTASK(taskStore);
@@ -88,40 +91,82 @@ public class TaskFragment extends Fragment {
                 dbUserRef.child(userName).child("ACTIVETASK").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataTaskSnapshot) {
-                        for(DataSnapshot activeTaskSnapshot : dataTaskSnapshot.getChildren()){
+                        for (DataSnapshot activeTaskSnapshot : dataTaskSnapshot.getChildren()) {
                             ActiveTask activeTask = activeTaskSnapshot.getValue(ActiveTask.class);
                             activeTaskLists.add(activeTask);
+
+                        }
+                        listViewTask.setAdapter(customTaskAdapter);
+                        if (activeTaskLists.isEmpty()) {
+                            headActiveTask.setText("Now you don't have any activetasks,Please try again.");
+                            textSubCountdown.setVisibility(View.GONE);
+                            textTaskCountdown.setVisibility(View.GONE);
+                            for (int storecount = 0; storecount < storeLists.size(); storecount++) {
+                                ActiveTask newActiveTask = new ActiveTask();
+                                newActiveTask.setCurrentCondition(0);
+                                newActiveTask.setTaskStatus(0);
+                                newActiveTask.setStoreId(storeLists.get(storecount).getStoreID());
+
+                                dbUserRef.child(userName).child("ACTIVETASK").child(storeLists.get(storecount).getStoreID()).setValue(newActiveTask);
+                            }
+
+                        } else {
+                            //DO NOTHING
                         }
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-
-                CustomTaskAdapter customTaskAdapter = new CustomTaskAdapter();
-                listViewTask.setAdapter(customTaskAdapter);
-                listViewTask.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Toast.makeText(getContext(), "check = " + storeLists.get(i), Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(getActivity(), TheStoreActivity.class);
-                        intent.putExtra("storeID", storeLists.get(i).getStoreID());
-                        startActivity(intent);
 
                     }
+
                 });
 
 
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+
+        Calendar targetTime = Calendar.getInstance();
+        targetTime.set(Calendar.HOUR_OF_DAY, 23);
+        targetTime.set(Calendar.MINUTE, 59);
+
+        new CountDownTimer(targetTime.getTimeInMillis() - System.currentTimeMillis(), 1000) {
+
+            public void onTick(long millisUntilFinished) {
+
+                int seconds = (int) (millisUntilFinished / 1000);
+                int hours = seconds / (60 * 60);
+                int tempMint = (seconds - (hours * 60 * 60));
+                int minutes = tempMint / 60;
+                seconds = tempMint - (minutes * 60);
+
+                textTaskCountdown.setText("Remaining Time : " + String.format("%02d", hours) + ":" + String.format("%02d", minutes)
+                        + ":" + String.format("%02d", seconds));
+
+                //textTaskTimeLeft.setText(millisUntilFinished/1000+"sec left...");
+            }
+
+            public void onFinish() {
+                textTaskCountdown.setText("time out+");
+            }
+
+        }.start();
+        listViewTask.setAdapter(customTaskAdapter);
+        listViewTask.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getContext(), "check = " + storeLists.get(i), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getActivity(), TheStoreActivity.class);
+                intent.putExtra("storeID", storeLists.get(i).getStoreID());
+                startActivity(intent);
 
             }
-            });
-
-
-
-
+        });
 
         return taskview;
     }
@@ -135,7 +180,7 @@ public class TaskFragment extends Fragment {
 
         @Override
         public Object getItem(int i) {
-            return storeLists.get(i);
+            return null;
         }
 
         @Override
@@ -146,33 +191,33 @@ public class TaskFragment extends Fragment {
         @Override
         public View getView(int i, View tasklistview, ViewGroup viewGroup) {
             tasklistview = getLayoutInflater().inflate(R.layout.custom_task_listview, null);
+            if (!activeTaskLists.isEmpty()) {
 
-            if(!activeTaskLists.isEmpty()){
                 Store theStore = storeLists.get(i);
                 ActiveTask theActiveTask = activeTaskLists.get(i);
 
                 TextView textStoreInfo = tasklistview.findViewById(R.id.textStoreInfo);
                 TextView textTaskName = tasklistview.findViewById(R.id.textTaskName);
                 TextView textTaskDesc = tasklistview.findViewById(R.id.textTaskProgressBar);
-                final TextView textTaskTimeLeft = tasklistview.findViewById(R.id.textTaskTimeLeft);
+                // final TextView textTaskTimeLeft = tasklistview.findViewById(R.id.textTaskTimeLeft);
                 BubbleSeekBar progressTaskBar = tasklistview.findViewById(R.id.progressTaskBar);
                 TextView textTaskReward = tasklistview.findViewById(R.id.textTaskReward);
                 TextView textTaskStatus = tasklistview.findViewById(R.id.textTaskStatus);
 
-                if(theStore != null && theActiveTask != null){
-                    textStoreInfo.setText(theStore.getStoreID()+"_"+theStore.getStoreName());
+                if (theStore != null && theActiveTask != null) {
+                    textStoreInfo.setText(theStore.getStoreID() + "_" + theStore.getStoreName());
                     textTaskName.setText(theStore.getTASK().getTaskName());
-                    textTaskDesc.setText(theStore.getTASK().getTaskDetail() + ": "+theActiveTask.getCurrentCondition()+ "/" + theStore.getTASK().getTaskConditionForCompleteTask());
-                    textTaskReward.setText("+"+theStore.getTASK().getTaskExpReward()+"XP  / +"+theStore.getTASK().getTaskPointReward()+"PT");
+                    textTaskDesc.setText(theStore.getTASK().getTaskDetail() + ": " + theActiveTask.getCurrentCondition() + "/" + theStore.getTASK().getTaskConditionForCompleteTask());
+                    textTaskReward.setText("+" + theStore.getTASK().getTaskExpReward() + "XP  / +" + theStore.getTASK().getTaskPointReward() + "PT");
 //                    progressTaskBar.setMax(theStore.getTASK().getTaskConditionForCompleteTask());
 //                    progressTaskBar.setProgress(theActiveTask.getCurrentCondition());
-                    if(theActiveTask.getTaskStatus() == 0){
+                    if (theActiveTask.getTaskStatus() == 0) {
                         textTaskStatus.setText("TASK ACTIVE");
                         textTaskStatus.setTextColor(Color.GREEN);
-                    }else if (theActiveTask.getTaskStatus() == 1) {
+                    } else if (theActiveTask.getTaskStatus() == 1) {
                         textTaskStatus.setText("TASK DONE");
                         textTaskStatus.setTextColor(Color.RED);
-                    }else {
+                    } else {
                         textTaskStatus.setText("TASK STATUS ERROR");
                         textTaskStatus.setTextColor(Color.RED);
                     }
@@ -202,45 +247,15 @@ public class TaskFragment extends Fragment {
                     progressTaskBar.setEnabled(false);
                 }
 
-                Calendar targetTime = Calendar.getInstance();
-                targetTime.set(Calendar.HOUR_OF_DAY, 23);
-                targetTime.set(Calendar.MINUTE, 59);
-
-                new CountDownTimer(targetTime.getTimeInMillis()-System.currentTimeMillis(), 1000) {
-
-                    public void onTick(long millisUntilFinished) {
-                        textTaskTimeLeft.setText(millisUntilFinished/1000+"sec left...");
-                    }
-
-                    public void onFinish() {
-                        textTaskTimeLeft.setText("time out+");
-                    }
-
-                }.start();
+            } else {
+                tasklistview.setVisibility(View.GONE);
             }
-
-
-
-
-
-
-
-
-
-
-
 
 
 //            TextView textTaskName = (TextView) tasklistview.findViewById(R.id.textTaskName);
 //            TextView textTaskDesc = (TextView) tasklistview.findViewById(R.id.textTaskDesc);
 //            textTaskName.setText(theStore.getStoreName()+"_"+theStore.getTASK().getTaskName());
 //            textTaskDesc.setText(theStore.getTASK().getTaskDetail());
-
-
-
-
-
-
 
 
             return tasklistview;

@@ -4,6 +4,7 @@ package com.karnjang.firebasedemo.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,10 +26,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.karnjang.firebasedemo.R;
 import com.karnjang.firebasedemo.TheStoreActivity;
 import com.karnjang.firebasedemo.models.User;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -107,17 +111,24 @@ public class RankingFragment extends Fragment {
             TextView textRankLevel = (TextView) ranklistview.findViewById(R.id.rankTextLevel);
             TextView textRankCount = (TextView) ranklistview.findViewById(R.id.textRankCount);
             ImageView imageRank = (ImageView) ranklistview.findViewById(R.id.imageRank);
+            CircleImageView imageProfile = (CircleImageView) ranklistview.findViewById(R.id.imageRankProflie) ;
+
+
 
             textRankCount.setText(""+(i+1));
 
             if(i == 0){
                 imageRank.setImageResource(R.drawable.gold_thophy);
+                textRankName.setTypeface(null, Typeface.BOLD);
             }else if (i == 1){
                 imageRank.setImageResource(R.drawable.sliver_thophy);
+                textRankName.setTypeface(null, Typeface.BOLD);
             }else if (i == 2){
                 imageRank.setImageResource(R.drawable.bronze_thophy);
+                textRankName.setTypeface(null, Typeface.BOLD);
             }else {
                 imageRank.setVisibility(View.INVISIBLE);
+                textRankCount.setTypeface(null, Typeface.NORMAL);
             }
 
             //Sorting by DESC
@@ -128,6 +139,7 @@ public class RankingFragment extends Fragment {
 //                textRankLevel.setTextColor(Color.GREEN);
 //            }
             textRankLevel.setText(theUser.getUserLevel());
+            Picasso.with(getContext()).load(theUser.getPictureProfile()).fit().into(imageProfile);
             return ranklistview;
         }
     }

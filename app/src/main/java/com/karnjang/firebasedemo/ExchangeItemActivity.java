@@ -31,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.karnjang.firebasedemo.models.Item;
+import com.karnjang.firebasedemo.models.TaskFeed;
 import com.karnjang.firebasedemo.models.User;
 import com.karnjang.firebasedemo.models.UserAct;
 
@@ -45,6 +46,7 @@ public class ExchangeItemActivity extends AppCompatActivity {
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
     DatabaseReference dbStoreRef = dbref.child("STORE");
     DatabaseReference dbUserRef = dbref.child("users");
+    DatabaseReference dbFeedRef = dbref.child("FEEDS");
 
     int[] IMAGES = {R.drawable.drink1,
             R.drawable.drink1,
@@ -111,6 +113,67 @@ public class ExchangeItemActivity extends AppCompatActivity {
         cancleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dbUserRef.child(userName).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot userSnapshot) {
+
+                        User user = userSnapshot.getValue(User.class);
+                        Long longUserProgress = (Long) userSnapshot.child("ACTIVETASK").child(storeId).child("currentCondition").getValue();
+                        int userProgress = longUserProgress.intValue();
+                        dbUserRef.child(userName).child("totalPoints").setValue(user.getTotalPoints() - itemEx.getItemPrice());
+                        dbUserRef.child(userName).child("ACTIVETASK").child(storeId).child("currentCondition").setValue(userProgress+1);
+                        dbStoreRef.child(storeId).child("ITEMS").child(itemEx.getItemId()).child("itemAmount").setValue(itemEx.getItemAmount()-1);
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        //do nothing
+                    }
+                });
+
+                SimpleDateFormat stampTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String formated = stampTime.format(new Date());
+
+                UserAct action1 = new UserAct();
+                action1.setActionResult("-"+itemEx.getItemPrice()+"points");
+                action1.setActionStore(storeId);
+                action1.setActionDetail("EXCHANGE ITEM "+itemEx.getItemName());
+                action1.setActionTimeStamp(formated);
+
+                dbUserRef.child(userName).child("ACTIONS").push().setValue(action1, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError == null) {
+
+                            Log.i("Info", "Save successful");
+
+                        } else {
+
+                            Log.i("Info", "Save failed");
+
+                        }
+                    }
+                });
+
+                TaskFeed taskFeed = new TaskFeed();
+                taskFeed.setFeedTimeStamp(formated);
+                taskFeed.setFeedUsername(userName);
+                taskFeed.setFeedStore(storeId);
+                taskFeed.setFeedDetail("Got item "+itemEx.getItemName()+"!");
+
+                dbFeedRef.push().setValue(taskFeed, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError == null) {
+
+                            Log.i("Info", "Save successful");
+
+                        } else {
+
+                            Log.i("Info", "Save failed");
+
+                        }
+                    }
+                });
                 finish();
             }
         });
@@ -253,8 +316,28 @@ public class ExchangeItemActivity extends AppCompatActivity {
             action1.setActionDetail("EXCHANGE ITEM "+itemEx.getItemName());
             action1.setActionTimeStamp(formated);
 
-
             dbUserRef.child(userName).child("ACTIONS").push().setValue(action1, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if (databaseError == null) {
+
+                        Log.i("Info", "Save successful");
+
+                    } else {
+
+                        Log.i("Info", "Save failed");
+
+                    }
+                }
+            });
+
+            TaskFeed taskFeed = new TaskFeed();
+            taskFeed.setFeedTimeStamp(formated);
+            taskFeed.setFeedUsername(userName);
+            taskFeed.setFeedStore(storeId);
+            taskFeed.setFeedDetail("Got item "+itemEx.getItemName()+"!");
+
+            dbFeedRef.push().setValue(taskFeed, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                     if (databaseError == null) {

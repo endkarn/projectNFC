@@ -1,7 +1,7 @@
 package com.karnjang.firebasedemo.fragments;
 
 
-import android.app.ActionBar;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,10 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,10 +21,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.karnjang.firebasedemo.R;
 import com.karnjang.firebasedemo.models.User;
 import com.karnjang.firebasedemo.models.UserAct;
+import com.squareup.picasso.Picasso;
 
-import java.security.PrivateKey;
 import java.util.ArrayList;
-import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,17 +42,24 @@ public class MoreFragment extends Fragment {
 
     UserAct testAction1 = new UserAct();
 
+    CustomActionAdapter customActionAdapter = new CustomActionAdapter();
+
     TextView textUserLevel,textUsername,textUserTotalPoint,textUserExp,textUserLevelCard;
+    CircleImageView imageProfileImage;
 
 
     public MoreFragment() {
         // Required empty public constructor
-        testAction1.setActionResult("+100XP");
-        testAction1.setActionStore("SC09");
-        testAction1.setActionDetail("Complete Task");
-        testAction1.setActionTimeStamp(" ");
-        getKeyArrayList.add("akjhfdhgkaskdjh");
-        actionArrayList.add(testAction1);
+//        testAction1.setActionResult("+100XP");
+//        testAction1.setActionStore("SC09");
+//        testAction1.setActionDetail("Complete Task");
+//        testAction1.setActionTimeStamp(" ");
+//        getKeyArrayList.add("akjhfdhgkaskdjh");
+//        getKeyArrayList.add("akjhfdhgkaskdjh");
+//        getKeyArrayList.add("akjhfdhgkaskdjh");
+//        actionArrayList.add(testAction1);
+//        actionArrayList.add(testAction1);
+//        actionArrayList.add(testAction1);
 
     }
 
@@ -68,11 +77,15 @@ public class MoreFragment extends Fragment {
         textUserExp = moreFragment.findViewById(R.id.textUserExp);
         textUserLevelCard = moreFragment.findViewById(R.id.textUserLevelCard);
 
+        imageProfileImage = moreFragment.findViewById(R.id.imageProfileImage);
+
+
         String username = myDefUser.getDefUser(this.getContext());
         Log.i("INFO MORE","SHOW MEEEE "+username);
 
         User getuser = new User();
 
+        //get userinfo
         dbUserRef.child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -82,43 +95,41 @@ public class MoreFragment extends Fragment {
                 textUsername.setText(getuser.getUsername());
                 textUserTotalPoint.setText(""+getuser.getTotalPoints());
                 textUserExp.setText(""+getuser.getTotalXp());
-                textUserLevelCard.setText(getuser.getUserLevelPersen());
+                textUserLevelCard.setText(getuser.WTFjustaPersent());
+
+                //set image from url facebook
+                Picasso.with(getContext()).load(getuser.getPictureProfile()).fit().into(imageProfileImage);
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) { }
         });
 
+        //getuser userActionTasks
+        //username = "KARNAWAT";
         dbUserRef.child(username).child("ACTIONS").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot actionSnapshot : dataSnapshot.getChildren()){
                     UserAct userAction = actionSnapshot.getValue(UserAct.class);
                     actionArrayList.add(userAction);
-                    Log.i("MORE INFO","useraction "+userAction);
-
-
-
-
+                    Log.i("MORE INFO","useraction "+userAction.getActionDetail());
                     Log.i("MORE INFO","KEYYYYYYYYY "+actionSnapshot.getKey());
 //                    Log.i("MORE INFO","actionSnapshot getvalue "+actionSnapshot.getValue());
                     getKeyArrayList.add(actionSnapshot.getKey());
+
                 }
+                listAction.setAdapter(customActionAdapter);
                 Log.i("MORE INFO","size actionlists"+actionArrayList.size());
-
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
+
         });
 
 
 
-
-
-
-        CustomActionAdapter customActionAdapter = new CustomActionAdapter();
         listAction.setAdapter(customActionAdapter);
 
 
@@ -139,7 +150,7 @@ public class MoreFragment extends Fragment {
 
         @Override
         public long getItemId(int i) {
-            return 0;
+            return i;
         }
 
         @Override
@@ -158,6 +169,8 @@ public class MoreFragment extends Fragment {
             textActionStore.setText(aUserAct.getActionStore());
             textActionDetail.setText(aUserAct.getActionDetail());
             textActionTimeStamp.setText(aUserAct.getActionTimeStamp());
+
+          //  Log.i("check userAct","getView userAct"+ actionArrayList.get(i));
 
 
 
