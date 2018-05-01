@@ -164,9 +164,9 @@ public class MoreFragment extends Fragment {
 
             UserAct aUserAct = (UserAct) getItem(getCount() - 1 - i);
 
-            textActionId.setText(getKeyArrayList.get(getCount() - 1 - i));
+            textActionId.setText("ref : "+getKeyArrayList.get(getCount() - 1 - i));
             textActionResult.setText(aUserAct.getActionResult());
-            textActionStore.setText(aUserAct.getActionStore());
+            textActionStore.setText("@"+aUserAct.getActionStore());
             textActionDetail.setText(aUserAct.getActionDetail());
             textActionTimeStamp.setText(aUserAct.getActionTimeStamp());
 

@@ -63,6 +63,8 @@ public class ExchangeItemActivity extends AppCompatActivity {
     Item itemEx;
     String storeId;
     String userName;
+    Long userTotalPoints;
+    Long reqPoints;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -266,95 +268,119 @@ public class ExchangeItemActivity extends AppCompatActivity {
         textNfc.setText(textString);
 
         if(waitingTag.equals(textString)){
-            final Dialog dialog = new Dialog(ExchangeItemActivity.this);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.custom_dialog_exchangeitem);
-            dialog.setCancelable(true);
 
-            Button buttonDiCom = dialog.findViewById(R.id.buttonDialog);
-            buttonDiCom.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    Toast.makeText(getApplicationContext()
-                            , "Close dialog", Toast.LENGTH_SHORT);
-                    dialog.cancel();
-                    finish();
 
-                }
-            });
-
-            TextView textDiItemName = (TextView)dialog.findViewById(R.id.textDiItemName);
-            TextView textDiItemStore = (TextView)dialog.findViewById(R.id.textDiItemStore);
-            ImageView imDiItem = (ImageView)dialog.findViewById(R.id.imageDiItem);
-
-            textDiItemName.setText(itemEx.getItemName());
-            textDiItemStore.setText(storeId);
-            imDiItem.setImageResource(IMAGES[itemEx.getItemType()]);
-
-            dbUserRef.child(userName).addListenerForSingleValueEvent(new ValueEventListener() {
+            dbUserRef.child(userName).child("totalPoint").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot userSnapshot) {
-
-                    User user = userSnapshot.getValue(User.class);
-                    Long longUserProgress = (Long) userSnapshot.child("ACTIVETASK").child(storeId).child("currentCondition").getValue();
-                    int userProgress = longUserProgress.intValue();
-                    dbUserRef.child(userName).child("totalPoints").setValue(user.getTotalPoints() - itemEx.getItemPrice());
-                    dbUserRef.child(userName).child("ACTIVETASK").child(storeId).child("currentCondition").setValue(userProgress+1);
-                    dbStoreRef.child(storeId).child("ITEMS").child(itemEx.getItemId()).child("itemAmount").setValue(itemEx.getItemAmount()-1);
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    userTotalPoints = (Long) dataSnapshot.getValue();
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    //do nothing
+
                 }
             });
 
-            SimpleDateFormat stampTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String formated = stampTime.format(new Date());
 
-            UserAct action1 = new UserAct();
-            action1.setActionResult("-"+itemEx.getItemPrice()+"points");
-            action1.setActionStore(storeId);
-            action1.setActionDetail("EXCHANGE ITEM "+itemEx.getItemName());
-            action1.setActionTimeStamp(formated);
 
-            dbUserRef.child(userName).child("ACTIONS").push().setValue(action1, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                    if (databaseError == null) {
 
-                        Log.i("Info", "Save successful");
+            if(userTotalPoints >= itemEx.getItemPrice() && userTotalPoints >= 0){
+                final Dialog dialog = new Dialog(ExchangeItemActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.custom_dialog_exchangeitem);
+                dialog.setCancelable(true);
 
-                    } else {
-
-                        Log.i("Info", "Save failed");
+                Button buttonDiCom = dialog.findViewById(R.id.buttonDialog);
+                buttonDiCom.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Toast.makeText(getApplicationContext()
+                                , "Close dialog", Toast.LENGTH_SHORT);
+                        dialog.cancel();
+                        finish();
 
                     }
-                }
-            });
+                });
 
-            TaskFeed taskFeed = new TaskFeed();
-            taskFeed.setFeedTimeStamp(formated);
-            taskFeed.setFeedUsername(userName);
-            taskFeed.setFeedStore(storeId);
-            taskFeed.setFeedDetail("Got item "+itemEx.getItemName()+"!");
+                TextView textDiItemName = (TextView)dialog.findViewById(R.id.textDiItemName);
+                TextView textDiItemStore = (TextView)dialog.findViewById(R.id.textDiItemStore);
+                ImageView imDiItem = (ImageView)dialog.findViewById(R.id.imageDiItem);
 
-            dbFeedRef.push().setValue(taskFeed, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                    if (databaseError == null) {
+                textDiItemName.setText(itemEx.getItemName());
+                textDiItemStore.setText(storeId);
+                imDiItem.setImageResource(IMAGES[itemEx.getItemType()]);
 
-                        Log.i("Info", "Save successful");
+                dbUserRef.child(userName).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot userSnapshot) {
 
-                    } else {
-
-                        Log.i("Info", "Save failed");
-
+                        User user = userSnapshot.getValue(User.class);
+                        Long longUserProgress = (Long) userSnapshot.child("ACTIVETASK").child(storeId).child("currentCondition").getValue();
+                        int userProgress = longUserProgress.intValue();
+                        dbUserRef.child(userName).child("totalPoints").setValue(user.getTotalPoints() - itemEx.getItemPrice());
+                        dbUserRef.child(userName).child("ACTIVETASK").child(storeId).child("currentCondition").setValue(userProgress+1);
+                        dbStoreRef.child(storeId).child("ITEMS").child(itemEx.getItemId()).child("itemAmount").setValue(itemEx.getItemAmount()-1);
                     }
-                }
-            });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        //do nothing
+                    }
+                });
+
+                SimpleDateFormat stampTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String formated = stampTime.format(new Date());
+
+                UserAct action1 = new UserAct();
+                action1.setActionResult("-"+itemEx.getItemPrice()+"points");
+                action1.setActionStore(storeId);
+                action1.setActionDetail("Exchange Item "+itemEx.getItemName());
+                action1.setActionTimeStamp(formated);
+
+                dbUserRef.child(userName).child("ACTIONS").push().setValue(action1, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError == null) {
+
+                            Log.i("Info", "Save successful");
+
+                        } else {
+
+                            Log.i("Info", "Save failed");
+
+                        }
+                    }
+                });
+
+                TaskFeed taskFeed = new TaskFeed();
+                taskFeed.setFeedTimeStamp(formated);
+                taskFeed.setFeedUsername(userName);
+                taskFeed.setFeedStore(storeId);
+                taskFeed.setFeedDetail("Got item "+itemEx.getItemName()+"!");
+
+                dbFeedRef.push().setValue(taskFeed, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError == null) {
+
+                            Log.i("Info", "Save successful");
+
+                        } else {
+
+                            Log.i("Info", "Save failed");
+
+                        }
+                    }
+                });
 
 
-            dialog.show();
-            nfcPendingIntent.cancel();
+                dialog.show();
+                nfcPendingIntent.cancel();
+
+
+            }else{
+                Toast.makeText(getApplicationContext(), "Error : Don't have enough points!", Toast.LENGTH_LONG).show();
+            }
+
 
 
 

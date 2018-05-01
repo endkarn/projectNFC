@@ -2,6 +2,7 @@ package com.karnjang.firebasedemo.fragments;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,14 +16,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.karnjang.firebasedemo.R;
 import com.karnjang.firebasedemo.TheStoreActivity;
 import com.karnjang.firebasedemo.models.Store;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -32,6 +38,7 @@ import java.util.ArrayList;
 public class StoreFragment extends Fragment {
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
     DatabaseReference dbStoreRef = dbref.child("STORE");
+    StorageReference mStorageRef  = FirebaseStorage.getInstance().getReference();
 
     int[] IMAGES = {R.drawable.store01, R.drawable.store02, R.drawable.store03, R.drawable.store04, R.drawable.store_image1, R.drawable.store_image2};
 //    String[] NAMES = {"STORE00", "STORE01", "STORE02", "STORE03", "STORE04", "STORE05", "STORE06"};
@@ -155,11 +162,25 @@ public class StoreFragment extends Fragment {
             Store theStore = storeLists.get(i);
 
             Log.i("Info Adapter","StoreINFO  " +theStore.getStoreID() + " " +theStore.getStoreName() );
-            ImageView imageView = (ImageView) storelistview.findViewById(R.id.imageView);
+            final ImageView imageView = (ImageView) storelistview.findViewById(R.id.imageView);
             TextView textStoreName = (TextView) storelistview.findViewById(R.id.cusTextStoreName);
             TextView textStoreDesc = (TextView) storelistview.findViewById(R.id.cusTextStoreDesc);
 
-            imageView.setImageResource(IMAGES[i]);
+            final StorageReference imgUrl = mStorageRef.child("store/STORE0001");
+
+            imgUrl.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Log.i("test URL Image", "URL :: "+uri);
+                    Picasso.with(getContext()).load(uri).fit().into(imageView);
+                }
+            });
+
+            //Log.i("test URL Image", "URL :: "+imgUrl.getPath());
+//
+            //Picasso.with(getContext()).load(String.valueOf(imgUrl.getPath())).fit().into(imageView);
+
+            //imageView.setImageResource(IMAGES[i]);
             textStoreName.setText(theStore.getStoreID());
             textStoreDesc.setText(theStore.getStoreName());
             return storelistview;

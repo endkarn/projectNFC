@@ -27,6 +27,7 @@ import com.karnjang.firebasedemo.models.Store;
 import com.karnjang.firebasedemo.models.Task;
 import com.karnjang.firebasedemo.models.TaskFeed;
 import com.karnjang.firebasedemo.models.User;
+import com.karnjang.firebasedemo.models.UserAct;
 import com.xw.repo.BubbleSeekBar;
 
 import org.w3c.dom.Text;
@@ -145,15 +146,17 @@ public class TheStoreTaskFragment extends Fragment {
                                     textTaskStatus.setText("TASK STATUS ERROR");
                                     textTaskStatus.setTextColor(Color.RED);
                                 }
+
+
                                 if (userProgress == taskProgress && intTaskStatus == 0){
                                     User user = userSnapshot.getValue(User.class);
                                     Task task = taskSnapshot.getValue(Task.class);
-                                    ActiveTask userTask = userSnapshot.child("ACTIVETASK").child(storeId).getValue(ActiveTask.class);
-                                    userTask.setTaskStatus(1);
-                                    userTask.setStoreId(storeId);
+//                                    ActiveTask userTask = userSnapshot.child("ACTIVETASK").child(storeId).getValue(ActiveTask.class);
+//                                    userTask.setTaskStatus(1);
+//                                    userTask.setStoreId(storeId);
                                     dbUserRef.child(userName).child("totalPoints").setValue(user.getTotalPoints()+task.getTaskPointReward());
                                     dbUserRef.child(userName).child("totalXp").setValue(user.getTotalXp()+task.getTaskExpReward());
-                                    dbUserRef.child(userName).child("ACTIVETASK").child(storeId).setValue(userTask);
+                                    dbUserRef.child(userName).child("ACTIVETASK").child(storeId).child("taskStatus").setValue(1);
 //                                Map<String,Object> taskMap = new HashMap<String,Object>();
 //                                taskMap.put("currentCondition",0);
 //                                dbUserRef.child(userName).child("ACTIVETASK").child(storeId).child("currentCondition").updateChildren(taskMap);
@@ -174,6 +177,25 @@ public class TheStoreTaskFragment extends Fragment {
                                                 Log.i("Info", "Save successful");
                                             } else {
                                                 Log.i("Info", "Save failed");
+                                            }
+                                        }
+                                    });
+                                    UserAct action1 = new UserAct();
+                                    action1.setActionResult("+"+oneStoreTask.getTaskPointReward()+"points  +"+oneStoreTask.getTaskExpReward()+"xp");
+                                    action1.setActionStore(storeId);
+                                    action1.setActionDetail("Completed Task "+oneStoreTask.getTaskName());
+                                    action1.setActionTimeStamp(formated);
+                                    dbUserRef.child(userName).child("ACTIONS").push().setValue(action1, new DatabaseReference.CompletionListener() {
+                                        @Override
+                                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                            if (databaseError == null) {
+
+                                                Log.i("Info", "Save successful");
+
+                                            } else {
+
+                                                Log.i("Info", "Save failed");
+
                                             }
                                         }
                                     });
@@ -228,7 +250,14 @@ public class TheStoreTaskFragment extends Fragment {
                     new CountDownTimer(targetTime.getTimeInMillis()-System.currentTimeMillis(), 1000) {
 
                         public void onTick(long millisUntilFinished) {
-                            textTaskTimeLeft.setText("seconds remaining: " + millisUntilFinished / 1000);
+                            int seconds = (int) (millisUntilFinished / 1000);
+                            int hours = seconds / (60 * 60);
+                            int tempMint = (seconds - (hours * 60 * 60));
+                            int minutes = tempMint / 60;
+                            seconds = tempMint - (minutes * 60);
+
+                            textTaskTimeLeft.setText("Remaining Time : " + String.format("%02d", hours) + ":" + String.format("%02d", minutes)
+                                    + ":" + String.format("%02d", seconds));
                             //here you can have your logic to set text to edittext
                         }
 

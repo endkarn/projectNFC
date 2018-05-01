@@ -54,6 +54,7 @@
                     android:fontFamily="@font/roboto"
                     android:text="Timeleft"
                     android:textAlignment="center"
+                    android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@+id/textTaskName" />
 
                 <TextView

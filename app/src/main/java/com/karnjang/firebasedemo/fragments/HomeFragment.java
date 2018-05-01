@@ -40,6 +40,7 @@ public class HomeFragment extends Fragment {
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
     DatabaseReference dbFeedRef = dbref.child("FEEDS");
 
+
     ArrayList<TaskFeed> feedList = new ArrayList<>();
     TaskFeed testFeed = new TaskFeed();
 
@@ -133,21 +134,17 @@ public class HomeFragment extends Fragment {
 
             //Convent storeID -> storeName
             DatabaseReference dbStoreRef = dbref.child("STORE");
-            dbStoreRef.child(aTaskFeed.getFeedStore()).addListenerForSingleValueEvent(new ValueEventListener() {
+            dbStoreRef.child(aTaskFeed.getFeedStore()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if(dataSnapshot.exists()){
                         aTaskFeed.setFeedStore((String)dataSnapshot.child("storeName").getValue());
 
-
                     }else {
-                        aTaskFeed.setFeedStore("ERROR GET STORE NAME");
+                       // aTaskFeed.setFeedStore("ERROR GET STORE NAME");
                     }
                     String s = "<b> "+ aTaskFeed.getFeedUsername() +" </b> " +aTaskFeed.getFeedDetail() +" from <b>"+aTaskFeed.getFeedStore()+"</b>";
                     textFeedDes.setText(Html.fromHtml(s));
-
-
-
 
                 }
 

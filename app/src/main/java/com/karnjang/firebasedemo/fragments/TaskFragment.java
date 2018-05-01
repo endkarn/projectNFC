@@ -76,6 +76,7 @@ public class TaskFragment extends Fragment {
                 for (DataSnapshot storeSnapshot : dataSnapshot.getChildren()) {
                     Log.i("info TaskFragment", "data snapshot storekey " + storeSnapshot.getKey());
                     Log.i("info TaskFragment", "data snapshot value " + storeSnapshot.getValue());
+                    Log.i("info TaskFragment", "data snapshot task " + storeSnapshot.child("TASK").getValue());
                     Store oneStore = new Store();
                     String storeId = (String) storeSnapshot.child("storeID").getValue();
                     String storeName = (String) storeSnapshot.child("storeName").getValue();

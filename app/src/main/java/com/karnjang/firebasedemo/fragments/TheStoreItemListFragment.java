@@ -68,7 +68,7 @@ public class TheStoreItemListFragment extends Fragment {
         Log.i("######StoreListItem","get store id"+storeId);
 
 
-        dbStoreRef.child(storeId).child("ITEMS").addListenerForSingleValueEvent(new ValueEventListener() {
+        dbStoreRef.child(storeId).child("ITEMS").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()){

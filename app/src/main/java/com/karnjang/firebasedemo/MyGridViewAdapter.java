@@ -22,7 +22,12 @@ public class MyGridViewAdapter extends GridView{
             int height = getChildAt(0).getHeight() + 1 ;
             oldCount = getCount();
             params = getLayoutParams();
-            params.height = ((getCount() * height)/2);
+            if(getCount()%2==0){
+                params.height = ((getCount() * height)/2);
+            }else {
+                params.height = (((getCount()+1) * height)/2);
+            }
+
             setLayoutParams(params);
         }
 
