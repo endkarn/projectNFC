@@ -42,6 +42,7 @@ public class TheStoreItemListFragment extends Fragment {
 
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
     DatabaseReference dbStoreRef = dbref.child("STORE");
+    DatabaseReference dbUserRef = dbref.child("users");
 
     int[] IMAGES = {R.drawable.drink1,
             R.drawable.drink1,
@@ -51,10 +52,14 @@ public class TheStoreItemListFragment extends Fragment {
     String[] PRICE = {"100", "150", "120", "133", "444", "555", "666"};
     ArrayList<Item> itemArrayList = new ArrayList<>();
     String storeId;
+    Integer userPoint;
+    String userName;
+
 
 
     public TheStoreItemListFragment() {
         // Required empty public constructor
+
     }
 
 
@@ -67,6 +72,11 @@ public class TheStoreItemListFragment extends Fragment {
         storeId = getActivity().getIntent().getExtras().getString("storeID");
         Log.i("######StoreListItem","get store id"+storeId);
 
+        SharedPreferences userPref = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        userName = userPref.getString("SH_USERNAME","");
+
+
+
 
         dbStoreRef.child(storeId).child("ITEMS").addValueEventListener(new ValueEventListener() {
             @Override
@@ -78,8 +88,25 @@ public class TheStoreItemListFragment extends Fragment {
                     itemArrayList.add(item);
                 }
 
-                CustomItemListAdapter customItemListStore = new CustomItemListAdapter();
-                listViewTheStoreItemList.setAdapter(customItemListStore);
+                dbUserRef.child(userName).child("totalPoints").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.i("Check User", "User Datasnap ==  " + dataSnapshot.getValue());
+                        Long longuserPoint = (Long) dataSnapshot.getValue();
+                        userPoint = longuserPoint.intValue();
+
+                        CustomItemListAdapter customItemListStore = new CustomItemListAdapter();
+                        listViewTheStoreItemList.setAdapter(customItemListStore);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+
+                });
+
+
 
 
 
@@ -147,8 +174,9 @@ public class TheStoreItemListFragment extends Fragment {
 
             textItemAmount.setText("Amount:"+item.getItemAmount());
 
+Log.i("CHeck user", "User POINT =="+userPoint);
 
-            if(item.getItemAmount() > 0){
+            if(item.getItemAmount() > 0 && userPoint >= item.getItemPrice()){
                 button.setText("USE"+item.getItemPrice());
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override

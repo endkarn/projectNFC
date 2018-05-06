@@ -1,6 +1,7 @@
 package com.karnjang.firebasedemo.fragments;
 
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -11,13 +12,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.karnjang.firebasedemo.R;
 import com.karnjang.firebasedemo.models.Store;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -26,6 +31,7 @@ import org.w3c.dom.Text;
  */
 public class TheStoreDetailFragment extends Fragment {
 
+    StorageReference mStorageRef  = FirebaseStorage.getInstance().getReference();
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
     DatabaseReference dbStoreRef = dbref.child("STORE");
     int[] IMAGES = {R.drawable.store01, R.drawable.store02, R.drawable.store03, R.drawable.store04, R.drawable.store_image1, R.drawable.store_image2};
@@ -66,7 +72,19 @@ public class TheStoreDetailFragment extends Fragment {
                     Log.i("TheStoreDetail INFO","Check DATA StoreID"+storeId);
                     Log.i("TheStoreDetail INFO","Check DATA StoreName"+storeName);
 
-                    imageStore.setImageResource(IMAGES[(sIndex)-1]);
+                    final StorageReference imgUrl = mStorageRef.child("store/"+oneStore.getStoreID());
+
+                    imgUrl.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Log.i("test URL Image", "URL :: "+uri);
+                            Picasso.with(getContext()).load(uri).fit().into(imageStore);
+                        }
+
+                    });
+
+
+
                     textTheStoreId.setText("STORE_ID__"+storeId);
                     textTheStoreName.setText("STORE_NAME__"+storeName);
                 }else {

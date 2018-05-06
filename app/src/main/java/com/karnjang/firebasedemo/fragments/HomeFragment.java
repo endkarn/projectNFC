@@ -55,7 +55,7 @@ public class HomeFragment extends Fragment {
 //        String formated = stampTime.format(new Date());
         testFeed.setFeedTimeStamp("TIME");
 
-        feedList.add(testFeed);
+      //  feedList.add(testFeed);
 
     }
 

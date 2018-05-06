@@ -44,7 +44,7 @@ public class MoreFragment extends Fragment {
 
     CustomActionAdapter customActionAdapter = new CustomActionAdapter();
 
-    TextView textUserLevel,textUsername,textUserTotalPoint,textUserExp,textUserLevelCard;
+    TextView textUserLevel,textUsername,textUserTotalPoint,textUserExp,textUserLevelCard,textUserNoAction;
     CircleImageView imageProfileImage;
 
 
@@ -78,6 +78,7 @@ public class MoreFragment extends Fragment {
         textUserLevelCard = moreFragment.findViewById(R.id.textUserLevelCard);
 
         imageProfileImage = moreFragment.findViewById(R.id.imageProfileImage);
+        textUserNoAction = moreFragment.findViewById(R.id.textUserNoAct);
 
 
         String username = myDefUser.getDefUser(this.getContext());
@@ -111,6 +112,9 @@ public class MoreFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot actionSnapshot : dataSnapshot.getChildren()){
+                    if(actionSnapshot.exists()){
+                        textUserNoAction.setVisibility(View.GONE);
+                    }
                     UserAct userAction = actionSnapshot.getValue(UserAct.class);
                     actionArrayList.add(userAction);
                     Log.i("MORE INFO","useraction "+userAction.getActionDetail());

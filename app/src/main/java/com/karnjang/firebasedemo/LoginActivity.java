@@ -119,6 +119,8 @@ public class LoginActivity extends AppCompatActivity {
 //        FOR TESTING ONLY
 //        final String yourName = userName.getText().toString();
         final String yourName = facebookUser.getUsername();
+
+
 //
 //        String yourPass = userPassword.getText().toString();
 //        final User user = new User(yourName,yourPass);
@@ -186,6 +188,7 @@ public class LoginActivity extends AppCompatActivity {
             URL profile_picture = new URL("https://graph.facebook.com/" + object.getString("id") + "/picture?width=250&height=250");
             Log.d("profile_picture url", profile_picture.toString());
             getStartButton.setText(object.getString("name"));
+            getStartButton.setVisibility(View.VISIBLE);
             Log.d("test",object.getString("name"));
             facebookUser.setUsername(object.getString("name"));
             facebookUser.setUserid(object.getString("id"));

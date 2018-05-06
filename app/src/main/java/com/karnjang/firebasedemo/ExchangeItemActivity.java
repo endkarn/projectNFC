@@ -222,6 +222,18 @@ public class ExchangeItemActivity extends AppCompatActivity {
             }
         }.start();
 
+        dbUserRef.child(userName).child("totalPoint").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                userTotalPoints = (Long) dataSnapshot.getValue();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
 
 
@@ -270,22 +282,10 @@ public class ExchangeItemActivity extends AppCompatActivity {
         if(waitingTag.equals(textString)){
 
 
-            dbUserRef.child(userName).child("totalPoint").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    userTotalPoints = (Long) dataSnapshot.getValue();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
 
 
 
-
-            if(userTotalPoints >= itemEx.getItemPrice() && userTotalPoints >= 0){
+//            if(userTotalPoints >= itemEx.getItemPrice() && userTotalPoints >= 0){
                 final Dialog dialog = new Dialog(ExchangeItemActivity.this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.custom_dialog_exchangeitem);
@@ -384,9 +384,9 @@ public class ExchangeItemActivity extends AppCompatActivity {
 
 
 
-        }else{
-
-        }
+//        }else{
+//
+//        }
     }
 
     @Override

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     tools:context=".fragments.MoreFragment">
 
@@ -182,7 +182,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
@@ -203,6 +203,14 @@
                     android:dividerHeight="-5dp"
                     android:scrollbars="none" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/textUserNoAct"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="0dp"
+                android:text="Currently , You haven't any history in system."
+                android:textAlignment="center" />
 
         </LinearLayout>
     </ScrollView>

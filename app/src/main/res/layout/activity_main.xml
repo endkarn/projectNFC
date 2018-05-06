@@ -12,6 +12,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="180dp" />
+
         <TextView
             android:id="@+id/textView3"
             android:layout_width="match_parent"
@@ -37,12 +41,9 @@
             tools:layout_editor_absoluteX="56dp"
             tools:layout_editor_absoluteY="113dp" />
 
-        <ImageView
-            android:id="@+id/imageView4"
+        <Space
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/coolpong_box" />
+            android:layout_height="20dp" />
 
         <com.facebook.login.widget.LoginButton
             android:id="@+id/login_button"
@@ -50,16 +51,19 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp" />
+            android:layout_marginBottom="30dp"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="7dp"
             android:onClick="getStarted"
             android:text="Get Started"
             android:textAlignment="center"
+            android:visibility="invisible"
             app:layout_constraintTop_toBottomOf="@+id/userName"
             tools:layout_editor_absoluteX="135dp" />
 

@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -81,7 +80,12 @@ public class StoreFragment extends Fragment {
                     String storeName = (String) storeSnapshot.child("storeName").getValue();
                     oneStore.setStoreID(storeId);
                     oneStore.setStoreName(storeName);
-                    storeLists.add(oneStore);
+
+                    if( (storeSnapshot.child("TASK").getValue()) == null && (storeSnapshot.child("ITEM").getValue()) == null  ){
+
+                    }else {
+                        storeLists.add(oneStore);
+                    }
 
                     Log.i("info StoreFragment","Store Added" +storeId);
 
@@ -163,10 +167,13 @@ public class StoreFragment extends Fragment {
 
             Log.i("Info Adapter","StoreINFO  " +theStore.getStoreID() + " " +theStore.getStoreName() );
             final ImageView imageView = (ImageView) storelistview.findViewById(R.id.imageView);
-            TextView textStoreName = (TextView) storelistview.findViewById(R.id.cusTextStoreName);
-            TextView textStoreDesc = (TextView) storelistview.findViewById(R.id.cusTextStoreDesc);
+            TextView textStoreName = (TextView) storelistview.findViewById(R.id.textStoreName);
+            TextView textStoreDesc = (TextView) storelistview.findViewById(R.id.textStoreDesc);
+            TextView textStoreType = (TextView) storelistview.findViewById(R.id.textStoreType);
+            TextView textStoreLv = (TextView) storelistview.findViewById(R.id.textStoreLv);
+            TextView textStoreDistance = (TextView) storelistview.findViewById(R.id.textStoreDistance);
 
-            final StorageReference imgUrl = mStorageRef.child("store/STORE0001");
+            final StorageReference imgUrl = mStorageRef.child("store/"+theStore.getStoreID());
 
             imgUrl.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override

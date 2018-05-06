@@ -89,7 +89,7 @@ public class TheStoreTaskFragment extends Fragment {
                     final Integer taskProgress = oneStoreTask.getTaskConditionForCompleteTask();
 
 
-                    dbUserRef.child(userName).child("ACTIVETASK").child(storeId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    dbUserRef.child(userName).child("ACTIVETASK").child(storeId).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot userSnapshot) {
 

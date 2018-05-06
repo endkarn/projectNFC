@@ -70,65 +70,65 @@ public class TaskFragment extends Fragment {
         userName = userPref.getString("SH_USERNAME", "");
         //userName = "KARNAWAT";
         Log.i("info TaskFragment", "Start Listener");
-        dbStoreRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+        dbUserRef.child(userName).child("ACTIVETASK").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot storeSnapshot : dataSnapshot.getChildren()) {
-                    Log.i("info TaskFragment", "data snapshot storekey " + storeSnapshot.getKey());
-                    Log.i("info TaskFragment", "data snapshot value " + storeSnapshot.getValue());
-                    Log.i("info TaskFragment", "data snapshot task " + storeSnapshot.child("TASK").getValue());
-                    Store oneStore = new Store();
-                    String storeId = (String) storeSnapshot.child("storeID").getValue();
-                    String storeName = (String) storeSnapshot.child("storeName").getValue();
-                    Task taskStore = storeSnapshot.child("TASK").getValue(Task.class);
-                    Log.i("info TaskFragment", "data snapshot value " + taskStore);
-                    oneStore.setStoreID(storeId);
-                    oneStore.setStoreName(storeName);
-                    oneStore.setTASK(taskStore);
-                    storeLists.add(oneStore);
-                    Log.i("info TaskFragment", "Store Added" + storeId);
+            public void onDataChange(DataSnapshot dataTaskSnapshot) {
+                for (DataSnapshot activeTaskSnapshot : dataTaskSnapshot.getChildren()) {
+                    ActiveTask activeUserTask = activeTaskSnapshot.getValue(ActiveTask.class);
+                    activeTaskLists.add(activeUserTask);
+                    Log.i("check active task", "TASK get user's task DONE from: " + activeUserTask.getStoreId());
 
-                }
-                dbUserRef.child(userName).child("ACTIVETASK").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataTaskSnapshot) {
-                        for (DataSnapshot activeTaskSnapshot : dataTaskSnapshot.getChildren()) {
-                            ActiveTask activeTask = activeTaskSnapshot.getValue(ActiveTask.class);
-                            activeTaskLists.add(activeTask);
+                    if (activeTaskLists.isEmpty()) {
+                        headActiveTask.setText("Visit the store page to get the some task ");
+                        headActiveTask.setTextSize(18);
+                        textSubCountdown.setVisibility(View.GONE);
+                        textTaskCountdown.setVisibility(View.GONE);
+                    } else {
+                        dbStoreRef.child(activeUserTask.getStoreId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Store activeStoreTask = new Store();
+                                //Log.i("check active task", "TASK get store's task DONE from: " + activeStoreTask.getTASK().getTaskName());
+                                Log.i("check active task", "TASK get store's task DONE from (SNAP): " + dataSnapshot.getValue());
+                                //activeStoreList.add(activeStoreTask);
 
-                        }
-                        listViewTask.setAdapter(customTaskAdapter);
-                        if (activeTaskLists.isEmpty()) {
-                            headActiveTask.setText("Now you don't have any activetasks,Please try again.");
-                            textSubCountdown.setVisibility(View.GONE);
-                            textTaskCountdown.setVisibility(View.GONE);
-                            for (int storecount = 0; storecount < storeLists.size(); storecount++) {
-                                ActiveTask newActiveTask = new ActiveTask();
-                                newActiveTask.setCurrentCondition(0);
-                                newActiveTask.setTaskStatus(0);
-                                newActiveTask.setStoreId(storeLists.get(storecount).getStoreID());
+                                String storeId = (String) dataSnapshot.child("storeID").getValue();
+                                String storeName = (String) dataSnapshot.child("storeName").getValue();
+                                Task taskStore = dataSnapshot.child("TASK").getValue(Task.class);
+                                activeStoreTask.setStoreID(storeId);
+                                activeStoreTask.setStoreName(storeName);
+                                activeStoreTask.setTASK(taskStore);
+                                storeLists.add(activeStoreTask);
 
-                                dbUserRef.child(userName).child("ACTIVETASK").child(storeLists.get(storecount).getStoreID()).setValue(newActiveTask);
+                                Log.i("TaskFragment", "check size activeTaskList:" + activeTaskLists.size());
+                                Log.i("TaskFragment", "check size storeList:" + storeLists.size());
+
                             }
 
-                        } else {
-                            //DO NOTHING
-                        }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        });
+
+
                     }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
 
-                    }
-
-                });
+//.child("TASK")
 
 
+                }
+//                listViewTask.setAdapter(customTaskAdapter);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
+
+
+
         });
 
 
@@ -157,18 +157,50 @@ public class TaskFragment extends Fragment {
             }
 
         }.start();
-        listViewTask.setAdapter(customTaskAdapter);
-        listViewTask.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getContext(), "check = " + storeLists.get(i), Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getActivity(), TheStoreActivity.class);
-                intent.putExtra("storeID", storeLists.get(i).getStoreID());
-                startActivity(intent);
+
+        new CountDownTimer(1750, 1000) {
+
+            public void onTick(long millisUntilFinished) {
 
             }
-        });
 
+            public void onFinish() {
+                listViewTask.setAdapter(customTaskAdapter);
+            }
+
+        }.start();
+
+
+//        if (activeTaskLists.isEmpty()) {
+//            headActiveTask.setText("Visit the store page to get the some task ");
+//            headActiveTask.setTextSize(18);
+//            textSubCountdown.setVisibility(View.GONE);
+//            textTaskCountdown.setVisibility(View.GONE);
+//        } else {
+//            listViewTask.setAdapter(customTaskAdapter);
+//            listViewTask.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                    Toast.makeText(getContext(), "check = " + activeTaskLists.get(i), Toast.LENGTH_LONG).show();
+//                    Intent intent = new Intent(getActivity(), TheStoreActivity.class);
+//                    intent.putExtra("storeID", activeTaskLists.get(i).getStoreId());
+//                    startActivity(intent);
+//
+//                }
+//            });
+//        }
+
+
+//        listViewTask.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                Toast.makeText(getContext(), "check = " + activeTaskLists.get(i), Toast.LENGTH_LONG).show();
+//                Intent intent = new Intent(getActivity(), TheStoreActivity.class);
+//                intent.putExtra("storeID", activeTaskLists.get(i).getStoreId());
+//                startActivity(intent);
+//
+//            }
+//        });
         return taskview;
     }
 
@@ -176,12 +208,12 @@ public class TaskFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return storeLists.size();
+            return activeTaskLists.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return null;
+            return activeTaskLists.get(i);
         }
 
         @Override
@@ -192,20 +224,21 @@ public class TaskFragment extends Fragment {
         @Override
         public View getView(int i, View tasklistview, ViewGroup viewGroup) {
             tasklistview = getLayoutInflater().inflate(R.layout.custom_task_listview, null);
+
+            ActiveTask theActiveTask = activeTaskLists.get(i);
+            Store theStore = storeLists.get(i);
+
+            TextView textStoreInfo = tasklistview.findViewById(R.id.textStoreInfo);
+            TextView textTaskName = tasklistview.findViewById(R.id.textTaskName);
+            TextView textTaskDesc = tasklistview.findViewById(R.id.textTaskProgressBar);
+            // final TextView textTaskTimeLeft = tasklistview.findViewById(R.id.textTaskTimeLeft);
+            BubbleSeekBar progressTaskBar = tasklistview.findViewById(R.id.progressTaskBar);
+            TextView textTaskReward = tasklistview.findViewById(R.id.textTaskReward);
+            TextView textTaskStatus = tasklistview.findViewById(R.id.textTaskStatus);
+
+
             if (!activeTaskLists.isEmpty()) {
-
-                Store theStore = storeLists.get(i);
-                ActiveTask theActiveTask = activeTaskLists.get(i);
-
-                TextView textStoreInfo = tasklistview.findViewById(R.id.textStoreInfo);
-                TextView textTaskName = tasklistview.findViewById(R.id.textTaskName);
-                TextView textTaskDesc = tasklistview.findViewById(R.id.textTaskProgressBar);
-                // final TextView textTaskTimeLeft = tasklistview.findViewById(R.id.textTaskTimeLeft);
-                BubbleSeekBar progressTaskBar = tasklistview.findViewById(R.id.progressTaskBar);
-                TextView textTaskReward = tasklistview.findViewById(R.id.textTaskReward);
-                TextView textTaskStatus = tasklistview.findViewById(R.id.textTaskStatus);
-
-                if (theStore != null && theActiveTask != null) {
+                if (theStore.getTASK() != null && theActiveTask != null) {
                     textStoreInfo.setText(theStore.getStoreID() + "_" + theStore.getStoreName());
                     textTaskName.setText(theStore.getTASK().getTaskName());
                     textTaskDesc.setText(theStore.getTASK().getTaskDetail() + ": " + theActiveTask.getCurrentCondition() + "/" + theStore.getTASK().getTaskConditionForCompleteTask());
@@ -246,10 +279,19 @@ public class TaskFragment extends Fragment {
                             .build();
 
                     progressTaskBar.setEnabled(false);
+                } else {
+                    //tasklistview.setVisibility(View.GONE);
+                    textStoreInfo.setText(theStore.getStoreID() + "_" + theStore.getStoreName());
+                    textTaskName.setText("Store Doesn't have the task right now");
+                    textTaskDesc.setVisibility(View.GONE);
+                    textTaskReward.setVisibility(View.GONE);
+                    textTaskStatus.setVisibility(View.GONE);
+                    progressTaskBar.setVisibility(View.GONE);
+
                 }
 
             } else {
-                tasklistview.setVisibility(View.GONE);
+
             }
 
 
