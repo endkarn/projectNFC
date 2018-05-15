@@ -26,10 +26,22 @@
             tools:layout_editor_absoluteY="2dp" />
 
         <TextView
+            android:id="@+id/textStoreInfo2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_thin"
+            android:text="Quest  Detail"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/textStoreInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/roboto_thin"
             android:text="TextView"
             android:textAlignment="center"
             android:textSize="24sp"
@@ -62,11 +74,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:fontFamily="@font/roboto"
+                    android:fontFamily="@font/roboto_thin"
                     android:text="TASKNAME"
                     android:textAlignment="center"
                     android:textSize="18sp"
-                    android:textStyle="bold|italic"
                     app:layout_constraintEnd_toStartOf="@+id/textTaskStatus"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -104,6 +115,7 @@
                 android:fontFamily="@font/roboto"
                 android:text="Reward"
                 android:textAlignment="center"
+                android:textColor="@color/color_green"
                 android:textSize="18sp"
                 app:layout_constraintTop_toBottomOf="@+id/textTaskTimeLeft"
                 tools:layout_editor_absoluteX="163dp" />

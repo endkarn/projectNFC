@@ -36,11 +36,19 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Visit the store to get task"
+                    android:textAlignment="center" />
+
+                <TextView
                     android:id="@+id/textView22"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="All task will be reseted in.."
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/textTaskCountdown"

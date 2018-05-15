@@ -38,7 +38,7 @@ public class NewUser {
         this.username = username;
         this.userid = userid;
         this.setTotalXp(10);
-        this.setTotalPoints(10);
+        this.setTotalPoints(1000);
         this.setPictureProfile("https://graph.facebook.com/"+userid+"/picture?width=250&height=250");
     }
 

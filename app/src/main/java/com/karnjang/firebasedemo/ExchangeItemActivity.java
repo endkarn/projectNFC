@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,7 +27,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.karnjang.firebasedemo.models.Item;
 import com.karnjang.firebasedemo.models.TaskFeed;
@@ -50,7 +48,7 @@ public class ExchangeItemActivity extends AppCompatActivity {
 
     int[] IMAGES = {R.drawable.drink1,
             R.drawable.drink1,
-            R.drawable.drink2,
+            R.drawable.drink1,
             R.drawable.drink3};
 
     private TextView textNfc;
@@ -138,7 +136,7 @@ public class ExchangeItemActivity extends AppCompatActivity {
                 UserAct action1 = new UserAct();
                 action1.setActionResult("-"+itemEx.getItemPrice()+"points");
                 action1.setActionStore(storeId);
-                action1.setActionDetail("EXCHANGE ITEM "+itemEx.getItemName());
+                action1.setActionDetail("User Point to Exchange Item "+itemEx.getItemName());
                 action1.setActionTimeStamp(formated);
 
                 dbUserRef.child(userName).child("ACTIONS").push().setValue(action1, new DatabaseReference.CompletionListener() {
@@ -333,7 +331,7 @@ public class ExchangeItemActivity extends AppCompatActivity {
                 UserAct action1 = new UserAct();
                 action1.setActionResult("-"+itemEx.getItemPrice()+"points");
                 action1.setActionStore(storeId);
-                action1.setActionDetail("Exchange Item "+itemEx.getItemName());
+                action1.setActionDetail("User Point to Exchange Item "+itemEx.getItemName());
                 action1.setActionTimeStamp(formated);
 
                 dbUserRef.child(userName).child("ACTIONS").push().setValue(action1, new DatabaseReference.CompletionListener() {
@@ -378,7 +376,7 @@ public class ExchangeItemActivity extends AppCompatActivity {
 
 
             }else{
-                Toast.makeText(getApplicationContext(), "Error : Don't have enough points!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Error : Wrong Tag , Please Try Again", Toast.LENGTH_LONG).show();
             }
 
 

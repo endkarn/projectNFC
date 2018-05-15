@@ -3,7 +3,9 @@ package com.karnjang.firebasedemo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.AnimationDrawable;
 import android.nfc.NfcAdapter;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -28,6 +31,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.karnjang.firebasedemo.models.NewUser;
 import com.karnjang.firebasedemo.models.User;
+import com.transitionseverywhere.ChangeText;
+import com.transitionseverywhere.Transition;
+import com.transitionseverywhere.TransitionManager;
 
 
 import org.json.JSONException;
@@ -38,6 +44,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class LoginActivity extends AppCompatActivity {
     User facebookUser = new User();
@@ -56,6 +63,12 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        final ConstraintLayout constraintLayout = (ConstraintLayout) findViewById(R.id.root_layout);
+        AnimationDrawable animationDrawable = (AnimationDrawable) constraintLayout.getBackground();
+        animationDrawable.setEnterFadeDuration(2000);
+        animationDrawable.setExitFadeDuration(4000);
+        animationDrawable.start();
 
         getStartButton = findViewById(R.id.button2);
 
@@ -80,6 +93,9 @@ public class LoginActivity extends AppCompatActivity {
                 parameters.putString("field", "id,email,birthday,friends");
                 request.setParameters(parameters);
                 request.executeAsync();
+
+
+
             }
 
             @Override
@@ -110,6 +126,21 @@ public class LoginActivity extends AppCompatActivity {
             request.setParameters(parameters);
             request.executeAsync();
         }
+
+        AccessTokenTracker tokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                if (currentAccessToken == null) {
+                    Log.d("FB", "User Logged Out.");
+                    //Do your task here after logout
+                    getStartButton.setVisibility(View.GONE);
+                }
+            }
+        };
+        tokenTracker.startTracking();
+
+
+
     }
 
     public void getStarted(View view){

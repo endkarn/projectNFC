@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.karnjang.firebasedemo.R;
 import com.karnjang.firebasedemo.TheStoreActivity;
+import com.karnjang.firebasedemo.models.Item;
 import com.karnjang.firebasedemo.models.Store;
 import com.squareup.picasso.Picasso;
 
@@ -78,13 +80,23 @@ public class StoreFragment extends Fragment {
                     Store oneStore = new Store();
                     String storeId = (String) storeSnapshot.child("storeID").getValue();
                     String storeName = (String) storeSnapshot.child("storeName").getValue();
+                    String storeDesc = (String) storeSnapshot.child("storeDesc").getValue();
+                    String storeType = (String) storeSnapshot.child("storeType").getValue();
+                    String storeLocation = (String) storeSnapshot.child("storeLocation").getValue();
+                    Item storeItem =  storeSnapshot.child("ITEMS").child("ITEM0001").getValue(Item.class);
+                    //String storeDistance = (String) storeSnapshot.child("storeDistance").getValue();
                     oneStore.setStoreID(storeId);
                     oneStore.setStoreName(storeName);
+                    oneStore.setStoreDesc(storeDesc);
+                    oneStore.setStoreType(storeType);
+                    oneStore.setStoreLocation(storeLocation);
 
-                    if( (storeSnapshot.child("TASK").getValue()) == null && (storeSnapshot.child("ITEM").getValue()) == null  ){
+                   // Log.i("check onestore","onestore itemcount : "+storeItem.getItemName());
 
-                    }else {
+                    if (storeItem != null){
                         storeLists.add(oneStore);
+                    }else{
+//                        storeLists.add(oneStore);
                     }
 
                     Log.i("info StoreFragment","Store Added" +storeId);
@@ -188,8 +200,11 @@ public class StoreFragment extends Fragment {
             //Picasso.with(getContext()).load(String.valueOf(imgUrl.getPath())).fit().into(imageView);
 
             //imageView.setImageResource(IMAGES[i]);
-            textStoreName.setText(theStore.getStoreID());
-            textStoreDesc.setText(theStore.getStoreName());
+            textStoreName.setText(theStore.getStoreName());
+            textStoreDesc.setText(Html.fromHtml(theStore.getStoreDesc()));
+            textStoreLv.setText("@"+theStore.getStoreLocation());
+            textStoreType.setText("#"+theStore.getStoreType());
+            //textStoreDistance.setText("@"+theStore.getStoreLocation());
             return storelistview;
 
 

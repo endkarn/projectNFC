@@ -76,6 +76,34 @@ public class TheStoreTaskFragment extends Fragment {
         final String storeId = getActivity().getIntent().getExtras().getString("storeID");
        // String storeName = getActivity().getIntent().getExtras().getString("storeName");
 
+        final User user = new User();
+        dbUserRef.child(userName).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot getUserSnapshot) {
+                if (getUserSnapshot.exists()) {
+
+                    Long userTotalPoints ;
+                    Long userTotalXp;
+                    userTotalPoints = (Long) getUserSnapshot.child("totalPoints").getValue();
+                    userTotalXp = (Long) getUserSnapshot.child("totalXp").getValue();
+                    user.setTotalXp(userTotalXp.intValue());
+                    user.setTotalPoints(userTotalPoints.intValue());
+                    Log.d("User DATA","userTotalPoints ::"+userTotalPoints + userTotalXp);
+
+
+
+
+                } else {
+                    //Toast.makeText(getApplicationContext(), "NO DATA OF THIS USERNAME", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+
+
         Log.i("TheStoreTask INFO","Check StoreID From Activity "+storeId);
         dbStoreRef.child(storeId).child("TASK").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -102,8 +130,7 @@ public class TheStoreTaskFragment extends Fragment {
                                 dbUserRef.child(userName).child("ACTIVETASK").child(storeId).setValue(newActiveTask);
                                 Log.i("ACTIVE TASK","!userSnapshot.exists()");
 
-                                textTaskStatus.setText("TASK ACTIVE");
-                                textTaskStatus.setTextColor(Color.GREEN);
+
                                 textProgressBar.setText(oneStoreTask.getTaskDetail()+" "+ 0 + "/" + taskProgress);
                                 progresTaskBar.getConfigBuilder()
                                         .min(0)
@@ -137,11 +164,11 @@ public class TheStoreTaskFragment extends Fragment {
                                 int intTaskStatus = longTaskStatus.intValue();
 
                                 if(intTaskStatus == 0){
-                                    textTaskStatus.setText("TASK ACTIVE");
+                                    textTaskStatus.setText("Active");
                                     textTaskStatus.setTextColor(Color.GREEN);
                                 }else if (intTaskStatus == 1) {
-                                    textTaskStatus.setText("TASK DONE");
-                                    textTaskStatus.setTextColor(Color.RED);
+                                    textTaskStatus.setText("Completed");
+                                    textTaskStatus.setTextColor(Color.BLUE);
                                 }else {
                                     textTaskStatus.setText("TASK STATUS ERROR");
                                     textTaskStatus.setTextColor(Color.RED);
@@ -149,14 +176,33 @@ public class TheStoreTaskFragment extends Fragment {
 
 
                                 if (userProgress == taskProgress && intTaskStatus == 0){
-                                    User user = userSnapshot.getValue(User.class);
-                                    Task task = taskSnapshot.getValue(Task.class);
+
+
+
+                                    final Task task = taskSnapshot.getValue(Task.class);
 //                                    ActiveTask userTask = userSnapshot.child("ACTIVETASK").child(storeId).getValue(ActiveTask.class);
 //                                    userTask.setTaskStatus(1);
 //                                    userTask.setStoreId(storeId);
-                                    dbUserRef.child(userName).child("totalPoints").setValue(user.getTotalPoints()+task.getTaskPointReward());
-                                    dbUserRef.child(userName).child("totalXp").setValue(user.getTotalXp()+task.getTaskExpReward());
-                                    dbUserRef.child(userName).child("ACTIVETASK").child(storeId).child("taskStatus").setValue(1);
+
+//                                    Log.d("check","Check user point :"+user.getTotalPoints() +" xp:"+user.getTotalXp());
+//                                    Log.d("check","Check snapshot point :"+userPoint +" xp:"+userTotalXp);
+
+
+                                    new CountDownTimer(5000, 1000) {
+
+                                        public void onTick(long millisUntilFinished) {
+
+                                        }
+
+                                        public void onFinish() {
+                                            dbUserRef.child(userName).child("totalPoints").setValue((user.getTotalPoints()+task.getTaskPointReward()));
+                                            dbUserRef.child(userName).child("totalXp").setValue((user.getTotalXp()+task.getTaskExpReward()));
+                                            dbUserRef.child(userName).child("ACTIVETASK").child(storeId).child("taskStatus").setValue(1);
+                                        }
+
+                                    }.start();
+
+
 //                                Map<String,Object> taskMap = new HashMap<String,Object>();
 //                                taskMap.put("currentCondition",0);
 //                                dbUserRef.child(userName).child("ACTIVETASK").child(storeId).child("currentCondition").updateChildren(taskMap);

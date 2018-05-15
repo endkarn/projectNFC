@@ -11,6 +11,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.security.PublicKey;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 /**
@@ -92,10 +94,14 @@ public class User {
     }
 
     public String WTFjustaPersent() {
+        NumberFormat formatter = new DecimalFormat("#0.00");
         Double userLevelD = (0.4 * Math.sqrt(totalXp));
-        String userLevelPer = String.valueOf(userLevelD);
+        String userLevelPer = String.valueOf(formatter.format(userLevelD));
         Log.i("check user","user percent >> userLevelPer = "+ userLevelPer);
         userLevelPer = userLevelPer.substring(userLevelPer.indexOf(".") + 1, userLevelPer.indexOf(".") + 3);
+//        if(userLevelPer.equals(null)){
+//            userLevelPer = "1";
+//        }
         Log.i("check user","user percent >> userLevelPer (Cooked) = "+ userLevelPer);
         return userLevelPer+"%";
     }

@@ -9,6 +9,9 @@ import java.util.List;
 public class Store {
     private String storeID ;
     private String storeName ;
+    private String storeDesc ;
+    private String storeType ;
+    private String storeLocation ;
     private Task TASK;
     private List<Item> ITEMS;
 
@@ -16,6 +19,7 @@ public class Store {
     public Store( ) {
 
     }
+
 
     public String getStoreID() {
         return storeID;
@@ -47,5 +51,29 @@ public class Store {
 
     public void setITEMS(List<Item> ITEMS) {
         this.ITEMS = ITEMS;
+    }
+
+    public String getStoreDesc() {
+        return storeDesc;
+    }
+
+    public void setStoreDesc(String storeDesc) {
+        this.storeDesc = storeDesc;
+    }
+
+    public String getStoreType() {
+        return storeType;
+    }
+
+    public void setStoreType(String storeType) {
+        this.storeType = storeType;
+    }
+
+    public String getStoreLocation() {
+        return storeLocation;
+    }
+
+    public void setStoreLocation(String storeLocation) {
+        this.storeLocation = storeLocation;
     }
 }

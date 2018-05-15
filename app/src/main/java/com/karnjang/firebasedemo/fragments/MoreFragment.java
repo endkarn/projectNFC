@@ -3,7 +3,9 @@ package com.karnjang.firebasedemo.fragments;
 
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,6 +29,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 /**
@@ -132,9 +137,21 @@ public class MoreFragment extends Fragment {
 
         });
 
+        new CountDownTimer(2000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                Toast.makeText(getApplicationContext(), "Loading Task", Toast.LENGTH_SHORT).show();
+            }
+
+            public void onFinish() {
+                listAction.setAdapter(customActionAdapter);
+            }
+
+        }.start();
 
 
-        listAction.setAdapter(customActionAdapter);
+
+
 
 
         return moreFragment;
@@ -162,14 +179,33 @@ public class MoreFragment extends Fragment {
             actionlistview = getLayoutInflater().inflate(R.layout.custom_action_listview,null);
             TextView textActionId = actionlistview.findViewById(R.id.textActionId);
             TextView textActionResult = actionlistview.findViewById(R.id.textActionResult);
-            TextView textActionStore = actionlistview.findViewById(R.id.textActionStore);
+            final TextView textActionStore = actionlistview.findViewById(R.id.textActionStore);
             TextView textActionDetail = actionlistview.findViewById(R.id.textActionDetail);
             TextView textActionTimeStamp = actionlistview.findViewById(R.id.textActionTimeStamp);
 
-            UserAct aUserAct = (UserAct) getItem(getCount() - 1 - i);
+            final UserAct aUserAct = (UserAct) getItem(getCount() - 1 - i);
 
             textActionId.setText("ref : "+getKeyArrayList.get(getCount() - 1 - i));
             textActionResult.setText(aUserAct.getActionResult());
+            DatabaseReference dbStoreRef = dbref.child("STORE");
+
+            dbStoreRef.child(aUserAct.getActionStore()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        aUserAct.setActionStore((String)dataSnapshot.child("storeName").getValue());
+
+                    }else {
+                        // aTaskFeed.setFeedStore("ERROR GET STORE NAME");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
             textActionStore.setText("@"+aUserAct.getActionStore());
             textActionDetail.setText(aUserAct.getActionDetail());
             textActionTimeStamp.setText(aUserAct.getActionTimeStamp());

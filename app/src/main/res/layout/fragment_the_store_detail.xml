@@ -42,7 +42,7 @@
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="70dp"
                         android:layout_alignBottom="@+id/imageTheStore"
                         android:layout_alignParentStart="true"
                         android:background="@drawable/my_custom_gradient1" />
@@ -64,7 +64,7 @@
                         android:text="STORE_ID"
                         android:textAlignment="textStart"
                         android:textColor="#ffffff"
-                        android:textSize="18sp"
+                        android:textSize="30sp"
                         android:textStyle="bold"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:layout_editor_absoluteX="151dp" />
@@ -77,6 +77,7 @@
                         android:text="STORE_NAME"
                         android:textAlignment="textStart"
                         android:textColor="#ffffff"
+                        android:textSize="18sp"
                         app:layout_constraintTop_toBottomOf="@+id/textTheStoreId"
                         tools:layout_editor_absoluteX="147dp" />
 
@@ -97,7 +98,7 @@
             app:contentPadding="10dp">
 
             <TextView
-                android:id="@+id/textView15"
+                android:id="@+id/textStoreDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="The one of best resturant in khon kean university. Such a nice place to hangout , meet each other or make some party...." />

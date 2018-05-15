@@ -2,8 +2,10 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/android_gradient_list"
     tools:context="com.karnjang.firebasedemo.LoginActivity"
     tools:layout_editor_absoluteY="25dp">
 
@@ -45,6 +47,20 @@
             android:layout_width="match_parent"
             android:layout_height="20dp" />
 
+        <Button
+            android:id="@+id/button2"
+            style="@style/com_facebook_button"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="7dp"
+            android:onClick="getStarted"
+            android:text="Get Started"
+            android:textAlignment="center"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/userName"
+            tools:layout_editor_absoluteX="135dp" />
+
         <com.facebook.login.widget.LoginButton
             android:id="@+id/login_button"
             android:layout_width="wrap_content"
@@ -53,19 +69,6 @@
             android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp"
             android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="250dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="7dp"
-            android:onClick="getStarted"
-            android:text="Get Started"
-            android:textAlignment="center"
-            android:visibility="invisible"
-            app:layout_constraintTop_toBottomOf="@+id/userName"
-            tools:layout_editor_absoluteX="135dp" />
 
     </LinearLayout>
 

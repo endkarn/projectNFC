@@ -5,22 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -31,7 +24,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.karnjang.firebasedemo.ExchangeItemActivity;
 import com.karnjang.firebasedemo.R;
 import com.karnjang.firebasedemo.models.Item;
-import com.xw.repo.BubbleSeekBar;
 
 import java.util.ArrayList;
 
@@ -48,8 +40,6 @@ public class TheStoreItemListFragment extends Fragment {
             R.drawable.drink1,
             R.drawable.drink2,
             R.drawable.drink3};
-    String[] NAMES = {"STORE00", "STORE01", "STORE02", "STORE03", "STORE04", "STORE05", "STORE06"};
-    String[] PRICE = {"100", "150", "120", "133", "444", "555", "666"};
     ArrayList<Item> itemArrayList = new ArrayList<>();
     String storeId;
     Integer userPoint;
@@ -81,6 +71,7 @@ public class TheStoreItemListFragment extends Fragment {
         dbStoreRef.child(storeId).child("ITEMS").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                itemArrayList = new ArrayList<>();
                 for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()){
                     Log.i("######StoreListItem","Loop For");
                     Item item = itemSnapshot.getValue(Item.class);
@@ -108,7 +99,9 @@ public class TheStoreItemListFragment extends Fragment {
 
 
 
-
+//                                Intent intent = getActivity().getIntent();
+//                                getActivity().finish();
+//                                startActivity(intent);
 
 
 

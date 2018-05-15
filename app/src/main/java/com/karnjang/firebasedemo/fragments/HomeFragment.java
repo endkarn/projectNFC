@@ -46,6 +46,8 @@ public class HomeFragment extends Fragment {
 
     CustomAdapter customAdapter = new CustomAdapter();
 
+
+
     public HomeFragment() {
         // Required empty public constructor
         testFeed.setFeedDetail("HARDCODE !!  For testing ONLY");
@@ -67,6 +69,8 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         final ListView listViewFeed = (ListView) view.findViewById(R.id.listViewFeed);
+            TextView titleFeed = (TextView) view.findViewById(R.id.textView20);
+
 
         dbFeedRef.addValueEventListener(new ValueEventListener() {
             @Override

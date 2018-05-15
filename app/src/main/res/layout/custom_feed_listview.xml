@@ -27,7 +27,7 @@
         <TextView
             android:id="@+id/textFeedDescription"
             android:layout_width="277dp"
-            android:layout_height="41dp"
+            android:layout_height="45dp"
             android:layout_marginStart="16dp"
             android:textAlignment="textStart"
             app:layout_constraintStart_toEndOf="@+id/imageProfileImage"
