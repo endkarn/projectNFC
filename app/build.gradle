@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.karnjang.firebasedemo"
         minSdkVersion 22
@@ -34,11 +33,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:9.4.0'
     implementation 'com.google.firebase:firebase-core:9.4.0'
     implementation 'com.google.firebase:firebase-database:9.4.0'
-    // Add Library For Bottom Nav
-    implementation 'com.android.support:design'
-    // Add Library For Fragment
-    //Already in appcompatv7
-    //Slide banner
     implementation 'com.ss.bannerslider:bannerslider:1.8.0'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -50,9 +44,7 @@ dependencies {
     implementation 'com.facebook.android:facebook-login:[4,5)'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
-    implementation "com.andkulikov:transitionseverywhere:1.7.9"
-
-
+    implementation 'com.andkulikov:transitionseverywhere:1.7.9'
 }
 
 
